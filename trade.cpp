@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <cstdint.h>
+#include <cstdint>
+#include <vector> 
 
 using namespace std;
 
@@ -24,7 +25,8 @@ public:
 
 class BytesReader{
 public:
-	BytesReader(uint8_t* buffer) : termination("BDBDBDBD") {
+	BytesReader(uint8_t* buffer) {
+		termination.assign("BDBDBDBD");
 		this->buffer = buffer;
 		this->pos = 0;
 	}
@@ -59,19 +61,19 @@ public:
 		return result;
 	}
 
-	string getChars(int n){
+	string getChars(size_t n){
 		string s( this->buffer, n);
 		this->pos += n;
 		return s;
 	}
 
 
-	string getMaxChars(fstream &f){
+	string getMaxChars(ifstream &f){
 		string s;
 		return s;
 	}
 
-	vector<Trader> getTraders(fstream &f){
+	vector<Trader> getTraders(ifstream &f){
 		vector<Trader> v;
 		uint8_t buffer[8];
 		for(;;){
@@ -157,7 +159,7 @@ public:
 	OrderEntryMessage(Header * hdr, ifstream &f): fix_size(37){   // exclude variable firm string and termination; max 255 and 8
 		//this.hdr = std::move(hdr);
 		this->hdr = hdr;
-		uint8_t buffer = new uint8_t[fix_size];
+		uint8_t *buffer = new uint8_t[fix_size];
 		f.read(buffer, fix_size);
 
 		BytesReader br(buffer);
@@ -199,7 +201,7 @@ class OrderAckMessage{
 public:
 	OrderAckMessage(Header * hdr, ifstream &f) : fix_size(14){
 		this->hdr = hdr;
-		uint8_t buffer = new uint8_t[fix_size];
+		uint8_t *buffer = new uint8_t[fix_size];
 		f.read(buffer, fix_size);
 
 		BytesReader br(buffer);
@@ -208,7 +210,7 @@ public:
 		this->client_id = br.getUint64();
 		this->order_status = br.getUint8();
 		this->reject_code = br.getUint8();
-
+		delete[] buffer;
 	}
 
 private:
@@ -226,7 +228,7 @@ public:
 	OrderFillMessage(Header * hdr, ifstream &f) : fix_size(17){
 		this->hdr = hdr;
 		this->hdr = hdr;
-		uint8_t buffer = new uint8_t[fix_size];
+		uint8_t* buffer = new uint8_t[fix_size];
 		f.read(buffer, fix_size);
 
 		BytesReader br(buffer);
@@ -234,23 +236,26 @@ public:
 		this->fill_price = br.getUint64();
 		this->fill_qty = br.getUint32();
 		this->no_of_contras = br.getUint8();
-		this->trades = br.getTraders(f);
+		this->traders = br.getTraders(f);
+		
+		delete[] buffer;
 	}
 
+	~OrderFillMessage(){
+		
+	}
 private:
 	Header *hdr;
 	uint32_t order_id;
 	uint64_t fill_price;
 	uint32_t fill_qty;
 	uint8_t no_of_contras;
-	vector<Trade> trades;
+	vector<Trader> traders;
 	int fix_size;
 };
 
 int parseStream(string stream){
 	ifstream input(stream.c_str(), ifstream::binary);
-
-	uint8_t buffer[HEAD_SIZE];
 
 	
 	Header hdr(input);
