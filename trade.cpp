@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <cstdint>
+#include <cstdint.h>
 
 using namespace std;
 
-class Trade{
+class Trader{
 public:
 	Trader(uint8_t firm_id, string trader_tag, uint32_t qty): firm_id(firm_id), trader_tag(trader_tag), qty(qty){
 		
