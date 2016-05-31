@@ -1,5 +1,6 @@
 #include "header.h"
 
+
 void Header::read(){
 	this->br->setBufferSize(header_size);
 	 
@@ -15,14 +16,17 @@ void Header::read(){
 void Header::op(){
 	switch(this->msg_type){
 		case 1:
-			OrderEntryMessage oem(this);
+			OrderEntryMessage oem;
+			oem.init(this);
 
 			break;
 		case 2:
 			OrderAckMessage oam(this);
+			oam.init(this);
 			break;
 		case 3:
 			OrderFillMessage ofm(this);
+			ofm.init(this);
 			break;
 		default:
 			throw runtime_error("unknown message type");
