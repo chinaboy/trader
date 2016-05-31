@@ -6,9 +6,9 @@ class Trade;
 class Header;
 class BytesReader;
 
-class OrderEntryMessage: fix_size(37){
+class OrderEntryMessage{
 public:
-	OrderEntryMessage(){}
+	OrderEntryMessage(): fix_size(37){}
 
 	void init(Header* hdr);
 	
@@ -28,9 +28,9 @@ private:
 	int fix_size;
 };
 
-class OrderAckMessage : fix_size(14){
+class OrderAckMessage{
 public:
-	OrderAckMessage(){}
+	OrderAckMessage() : fix_size(14){}
 
 	void init(Header * hdr);	
 
@@ -44,9 +44,9 @@ private:
 };
 
 
-class OrderFillMessage : fix_size(17){
+class OrderFillMessage{
 public:
-	OrderFillMessage(){}
+	OrderFillMessage() : fix_size(17){}
 
 	void init(Header* hdr);
 
