@@ -77,7 +77,7 @@ public:
 		vector<Trader> v;
 		uint8_t buffer[8];
 		for(;;){
-			f.read(buffer, 8);
+			f.read((char*)buffer, 8);
 			string s((const char*)buffer, 8);
 			if( string.compare(s) == 0 ){
 				break;
@@ -202,7 +202,7 @@ public:
 	OrderAckMessage(Header * hdr, ifstream &f) : fix_size(14){
 		this->hdr = hdr;
 		uint8_t *buffer = new uint8_t[fix_size];
-		f.read(buffer, fix_size);
+		f.read((char*)buffer, fix_size);
 
 		BytesReader br(buffer);
 		
@@ -229,7 +229,7 @@ public:
 		this->hdr = hdr;
 		this->hdr = hdr;
 		uint8_t* buffer = new uint8_t[fix_size];
-		f.read(buffer, fix_size);
+		f.read((char*)buffer, fix_size);
 
 		BytesReader br(buffer);
 		this->order_id = br.getUint32();
