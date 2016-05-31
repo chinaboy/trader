@@ -144,7 +144,7 @@ public:
 				case 2:
 					OrderAckMessage oam(this);
 					break;
-				case 3;
+				case 3:
 					OrderFillMessage ofm(this);
 					break;
 				default:
@@ -184,7 +184,7 @@ public:
 		// copy 10 chars to instrument
 		this->instrument = br->getChars(10);
 
-		this->getUint8 = br->getUint8();
+		this->side = br->getUint8();
 		this->client_assigned_id = br->getUint64();
 		this->time_in_force = br->getUint8();
 
@@ -245,7 +245,7 @@ public:
 		this->fill_price = br->getUint64();
 		this->fill_qty = br->getUint32();
 		this->no_of_contras = br->getUint8();
-		this->traders = br->getTraders(f);
+		this->traders = br->getTraders();
 	}
 
 	~OrderFillMessage(){
