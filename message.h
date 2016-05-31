@@ -6,30 +6,12 @@ class Trade;
 class Header;
 class BytesReader;
 
-class OrderEntryMessage{
+class OrderEntryMessage: fix_size(37){
 public:
-	OrderEntryMessage(Header * hdr): fix_size(37){   // exclude variable firm string and termination; max 255 and 8
-		//this.hdr = std::move(hdr);
-		this->hdr = hdr;
-		BytesReader *br = hdr->getBytesReader();
-		br->setBufferSize(fix_size);
-		
-		this->price = br->getUint64();
-		this->qty = br->getUint32();
-		// copy 10 chars to instrument
-		this->instrument = br->getChars(10);
+	OrderEntryMessage(){}
 
-		this->side = br->getUint8();
-		this->client_assigned_id = br->getUint64();
-		this->time_in_force = br->getUint8();
-
-		// copy 3 chars to trader tag
-		this->trader_tag = br->getChars(3);
-		this->firm_id = br->getUint8();
-
-		// read until termination string
-		this->firm = br->getMaxChars();
-	}
+	void init(Header* hdr);
+	
 
 private:
 	Header *hdr;
@@ -46,18 +28,11 @@ private:
 	int fix_size;
 };
 
-class OrderAckMessage{
+class OrderAckMessage : fix_size(14){
 public:
-	OrderAckMessage(Header * hdr) : fix_size(14){
-		this->hdr = hdr;
-		BytesReader *br = hdr->getBytesReader();
-		br->setBufferSize(fix_size);
-		
-		this->order_id = br->getUint32();
-		this->client_id = br->getUint64();
-		this->order_status = br->getUint8();
-		this->reject_code = br->getUint8();
-	}
+	OrderAckMessage(){}
+
+	void init(Header * hdr);	
 
 private:
 	Header *hdr;
@@ -69,19 +44,12 @@ private:
 };
 
 
-class OrderFillMessage{
+class OrderFillMessage : fix_size(17){
 public:
-	OrderFillMessage(Header * hdr) : fix_size(17){
-		this->hdr = hdr;
-		BytesReader *br = hdr->getBytesReader();
-		br->setBufferSize(fix_size);
+	OrderFillMessage(){}
 
-		this->order_id = br->getUint32();
-		this->fill_price = br->getUint64();
-		this->fill_qty = br->getUint32();
-		this->no_of_contras = br->getUint8();
-		this->trades = br->getTrades();
-	}
+	void init(Header* hdr);
+
 
 	~OrderFillMessage(){
 		
