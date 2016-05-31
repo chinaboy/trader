@@ -1,4 +1,4 @@
-#include "Header.h"
+#include "header.h"
 
 void Header::read(){
 	this->br->setBufferSize(header_size);
