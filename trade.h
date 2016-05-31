@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Header;
+
 class OrderEntryMessage;
 class OrderAckMessage;
 class OrderFillMessage;

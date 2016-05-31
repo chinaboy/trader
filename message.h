@@ -2,6 +2,10 @@
 
 #include "trade.h"
 
+class Trade;
+class Header;
+class BytesReader;
+
 class OrderEntryMessage{
 public:
 	OrderEntryMessage(Header * hdr): fix_size(37){   // exclude variable firm string and termination; max 255 and 8
