@@ -79,7 +79,7 @@ public:
 		for(;;){
 			f.read((char*)buffer, 8);
 			string s((const char*)buffer, 8);
-			if( string.compare(s) == 0 ){
+			if( s.compare(termination) == 0 ){
 				break;
 			}
 			this->buffer = buffer;
