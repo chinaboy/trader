@@ -81,6 +81,30 @@ public:
 		return s;
 	}	
 
+	string getMaxChars(){
+		string s;
+		return s;
+	}
+
+	vector<Trader> getTraders(){
+		vector<Trader> v;
+		uint8_t buffer[8];
+		for(;;){
+			f.read((char*)buffer, 8);
+			string s((const char*)buffer, 8);
+			if( s.compare(termination) == 0 ){
+				break;
+			}
+			this->buffer = buffer;
+			this->pos = 0;
+			uint8_t firm_id = getUint8();
+			string trader_tag = getChars(3);
+			uint32_t qty = getUint32();
+			Trader t(firm_id, trader_tag, qty);
+			v.push_back(t);
+		}
+		return std::move(v);
+	}
 private:
 	ifstream f;
 	uint8_t* buffer;
@@ -132,30 +156,7 @@ public:
 		return ! this->f.eof();
 	}
 
-	string getMaxChars(ifstream &f){
-		string s;
-		return s;
-	}
-
-	vector<Trader> getTraders(ifstream &f){
-		vector<Trader> v;
-		uint8_t buffer[8];
-		for(;;){
-			f.read((char*)buffer, 8);
-			string s((const char*)buffer, 8);
-			if( s.compare(termination) == 0 ){
-				break;
-			}
-			this->buffer = buffer;
-			this->pos = 0;
-			uint8_t firm_id = getUint8();
-			string trader_tag = getChars(3);
-			uint32_t qty = getUint32();
-			Trader t(firm_id, trader_tag, qty);
-			v.push_back(t);
-		}
-		return std::move(v);
-	}
+	
 
 	BytesReader * getBytesReader(){return br;}
 private:
@@ -212,7 +213,7 @@ private:
 
 class OrderAckMessage{
 public:
-	OrderAckMessage(Header * hdr, ifstream &f) : fix_size(14){
+	OrderAckMessage(Header * hdr) : fix_size(14){
 		this->hdr = hdr;
 		BytesReader *br = hdr->getBytesReader();
 		br->setBufferSize(fix_size);
@@ -235,7 +236,7 @@ private:
 
 class OrderFillMessage{
 public:
-	OrderFillMessage(Header * hdr, ifstream &f) : fix_size(17){
+	OrderFillMessage(Header * hdr) : fix_size(17){
 		this->hdr = hdr;
 		BytesReader *br = hdr->getBytesReader();
 		br->setBufferSize(fix_size);
