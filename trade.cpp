@@ -5,6 +5,13 @@
 
 using namespace std;
 
+class Trader;
+class BytesReader;
+class Header;
+class OrderEntryMessage;
+class OrderAckMessage;
+class OrderFillMessage;
+
 class Trader{
 public:
 	Trader(uint8_t firm_id, string trader_tag, uint32_t qty): firm_id(firm_id), trader_tag(trader_tag), qty(qty){
