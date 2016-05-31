@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdint>
 #include <vector> 
+#include <stdexcept> 
 
 using namespace std;
 
@@ -86,7 +87,7 @@ public:
 			this->pos = 0;
 			uint8_t firm_id = getUint8();
 			string trader_tag = getChars(3);
-			getUint32 qty = getUint32();
+			uint32_t qty = getUint32();
 			Trader t(firm_id, trader_tag, qty);
 			v.push_back(t);
 		}
