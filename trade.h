@@ -7,12 +7,15 @@
 #include <vector> 
 #include <stdexcept> 
 
+
 using namespace std;
 
 class Header;
 class OrderEntryMessage;
 class OrderAckMessage;
 class OrderFillMessage;
+
+#include "message.h"
 
 class Trade{
 public:

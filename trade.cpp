@@ -1,12 +1,6 @@
 #include "trade.h"
 
-
-class Trader;
-class BytesReader;
 class Header;
-class OrderEntryMessage;
-class OrderAckMessage;
-class OrderFillMessage;
 
 int parseStream(string stream){
 		
