@@ -62,7 +62,7 @@ public:
 	}
 
 	string getChars(size_t n){
-		string s( this->buffer, n);
+		string s( (const char*)this->buffer, n);
 		this->pos += n;
 		return s;
 	}
@@ -78,7 +78,7 @@ public:
 		uint8_t buffer[8];
 		for(;;){
 			f.read(buffer, 8);
-			string s(buffer, 8);
+			string s((const char*)buffer, 8);
 			if( string.compare(s) == 0 ){
 				break;
 			}
@@ -153,7 +153,7 @@ private:
 	uint8_t msg_direction;
 	uint16_t msg_len;
 };
-
+/*
 class OrderEntryMessage{
 public:
 	OrderEntryMessage(Header * hdr, ifstream &f): fix_size(37){   // exclude variable firm string and termination; max 255 and 8
@@ -253,7 +253,7 @@ private:
 	vector<Trader> traders;
 	int fix_size;
 };
-
+*/
 int parseStream(string stream){
 	ifstream input(stream.c_str(), ifstream::binary);
 
