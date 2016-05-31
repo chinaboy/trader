@@ -42,8 +42,8 @@ public:
 		if(this->buffer){
 			delete[] this->buffer;
 		}
-		this->buffer = new uint8_t[n];
-		this->f.read(buffer, fix_size);
+		this->buffer = new uint8_t[fix_size];
+		this->f.read((char*)buffer, fix_size);
 	}
 
 	uint8_t getUint8(){
@@ -91,7 +91,7 @@ private:
 class Header{
 public:
 	Header(string filename) : header_size(22){	
-		this->f = f;	
+		 
 		this->br = new BytesReader(filename);		
 	}
 
@@ -175,7 +175,7 @@ public:
 	OrderEntryMessage(Header * hdr): fix_size(37){   // exclude variable firm string and termination; max 255 and 8
 		//this.hdr = std::move(hdr);
 		this->hdr = hdr;
-		BytesReader br = hdr->getBytesReader();
+		BytesReader *br = hdr->getBytesReader();
 		br->setBufferSize(fix_size);
 		
 		this->price = br->getUint64();
@@ -214,7 +214,7 @@ class OrderAckMessage{
 public:
 	OrderAckMessage(Header * hdr, ifstream &f) : fix_size(14){
 		this->hdr = hdr;
-		BytesReader br = hdr->getBytesReader();
+		BytesReader *br = hdr->getBytesReader();
 		br->setBufferSize(fix_size);
 		
 		this->order_id = br->getUint32();
@@ -237,7 +237,7 @@ class OrderFillMessage{
 public:
 	OrderFillMessage(Header * hdr, ifstream &f) : fix_size(17){
 		this->hdr = hdr;
-		BytesReader br = hdr->getBytesReader();
+		BytesReader *br = hdr->getBytesReader();
 		br->setBufferSize(fix_size);
 
 		this->order_id = br->getUint32();
