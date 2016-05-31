@@ -1,6 +1,6 @@
 #pragma once
 
-#include "trade.h"
+#include "header.h"
 
 class Trade;
 class Header;

@@ -1,4 +1,4 @@
-#include "trade.h"
+#include "header.h"
 
 class Header;
 
