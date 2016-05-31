@@ -1,5 +1,5 @@
 #include "trade.h"
-using namespace std;
+
 
 class Trader;
 class BytesReader;

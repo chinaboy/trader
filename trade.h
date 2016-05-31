@@ -5,6 +5,8 @@
 #include <vector> 
 #include <stdexcept> 
 
+using namespace std;
+
 class Trader{
 public:
 	Trader(uint8_t firm_id, string trader_tag, uint32_t qty){
