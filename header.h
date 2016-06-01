@@ -97,6 +97,8 @@ public:
 			return std::move(v);
 		}
 	/// }}}
+
+
 private:
 	ifstream f;
 	vector<unsigned char> buffer; //uint8_t* buffer;
@@ -123,7 +125,7 @@ public:
 
 	BytesReader * getBytesReader(){return br;}
 
-	void printHeader(){ this->br->printHeader();}
+	void printHeader(){ }
 private:
 	ifstream f;
 	int header_size;
