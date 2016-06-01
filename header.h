@@ -52,7 +52,7 @@ public:
 		uint32_t result;
 		char s[4];
 		f.get( (char*) s, 4 );
-		result = ((uint32_t) s[3] << 24 ) + ((uint32_t) s[2] << 16 ) + ((uint32_t) s[1] ) << 8 + (uint32_t) s[0];
+		result = ((uint32_t) s[3] << 24 ) + ((uint32_t) s[2] << 16 ) + ((uint32_t) s[1] << 8 ) + (uint32_t) s[0];
 		return result;
 	}
 
@@ -63,7 +63,7 @@ public:
 	}
 
 	string getChars(size_t n){
-		string s( (const char*)this->buffer, n);
+		string s;
 		 
 		return s;
 	}	
