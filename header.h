@@ -37,7 +37,7 @@ public:
 
 	uint8_t getUint8(){
 		uint8_t result;
-		f.get(result);
+		f.get((char)result);
 		return result;
 	}
 
@@ -45,7 +45,7 @@ public:
 		uint16_t result;
 		char s[2];
 		f.get( (char*) s, 2 );
-		result = (uint16_t) s[1] << 8 + (uint16_t) s[0];
+		result = ((uint16_t) s[1] << 8 ) + (uint16_t) s[0];
 		return result;
 	}
 
@@ -53,7 +53,7 @@ public:
 		uint32_t result;
 		char s[4];
 		f.get( (char*) s, 4 );
-		result = (uint32_t) s[3] << 24 + (uint32_t) s[2] << 16 + (uint32_t) s[1] << 8 + (uint32_t) s[0];
+		result = ((uint32_t) s[3] << 24 ) + ((uint32_t) s[2] << 16 ) + ((uint32_t) s[1] ) << 8 + (uint32_t) s[0];
 		return result;
 	}
 
