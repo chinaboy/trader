@@ -1,6 +1,5 @@
 #include "header.h"
 
-
 void Header::read(){
 	this->br->setBufferSize(header_size); 
 	this->marker = this->br->getUint16();
@@ -84,8 +83,7 @@ void OrderFillMessage::init(Header * hdr){
 }
 
 
-int parseStream(string stream){
-		
+int parseStream(string stream){	
 	Header hdr(stream);
 	while( hdr.next() ){
 		hdr.read();

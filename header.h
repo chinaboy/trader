@@ -1,5 +1,3 @@
-#pragma once
-
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
@@ -7,9 +5,7 @@
 #include <vector> 
 #include <stdexcept> 
 
-
 using namespace std;
-
 
 class OrderEntryMessage;
 class OrderAckMessage;
@@ -31,100 +27,85 @@ class BytesReader{
 public:
 	BytesReader(string stream){
 		this->f.open(stream.c_str(), ifstream::binary);
-		termination.assign("BDBDBDBD");
-		this->pos = 0;
+		termination.assign("DBDBDBDB");
+		 
 	}
 
 	~BytesReader(){
-		delete[] this->buffer;
-
 		this->f.close();
 	}
 
-	void setBufferSize(int fix_size){
-		if(this->buffer){
-			delete[] this->buffer;
-		}
-		this->buffer = new uint8_t[fix_size];
-		this->f.read((char*)buffer, fix_size);
-	}
-
-	void printHeader(){
-		for(int i=0; i<22; i++){
-			cout << hex << this->buffer[i];
-		}
-	}
-
 	uint8_t getUint8(){
-		uint8_t result = this->buffer[this->pos];
-		this->pos++;
+		uint8_t result;
+		f.get(result);
 		return result;
 	}
 
-	uint16_t getUint16(){
-		int pos = this->pos;
-		uint16_t result = ((uint16_t)buffer[pos+1] << 8) | buffer[pos];
-		this->pos += 2;
+	uint16_t getUint16(){		 
+		uint16_t result;
+		char s[2];
+		f.get( (char*) s, 2 );
+		result = (uint16_t) s[1] << 8 + (uint16_t) s[0];
 		return result;
 	}
 
 	uint32_t getUint32(){	
-		uint8_t* tmp_buffer = this->buffer + this->pos;
-		uint32_t result = ((uint32_t)tmp_buffer[3] << 24) | ((uint32_t)tmp_buffer[2] << 16) | ((uint32_t)tmp_buffer[1] << 8) | tmp_buffer[0];
-		this->pos += 4;
+		uint32_t result;
+		char s[4];
+		f.get( (char*) s, 4 );
+		result = (uint32_t) s[3] << 24 + (uint32_t) s[2] << 16 + (uint32_t) s[1] << 8 + (uint32_t) s[0];
 		return result;
 	}
 
 	uint64_t getUint64(){
-		int pos = this->pos;
-		uint8_t* tmp_buffer = this->buffer + this->pos;
-		uint64_t result = ((uint64_t)tmp_buffer[7] << 56) | ((uint64_t)tmp_buffer[6] << 48) | ((uint64_t)tmp_buffer[5] << 40) |((uint64_t)tmp_buffer[4] << 32 ) |
-					((uint64_t)tmp_buffer[3] << 24) | ((uint64_t)tmp_buffer[2] << 16) | ((uint64_t)tmp_buffer[1] << 8) | tmp_buffer[0];
-		this->pos += 8;
-		return result;
+		uint64_t low = (uint64_t)getUint32();
+		uint64_t high = (uint64_t)getUint32();
+		return (high << 32 | low);
 	}
 
 	string getChars(size_t n){
 		string s( (const char*)this->buffer, n);
-		this->pos += n;
+		 
 		return s;
 	}	
 
-	string getMaxChars(){
-		string s;
-		return s;
-	}
-
-	vector<Trade> getTrades(){
-		vector<Trade> v;
-		uint8_t tmp_buffer[8];
-		for(;;){
-			f.read((char*)tmp_buffer, 8);
-			string s((const char*)tmp_buffer, 8);
-			if( s.compare(termination) == 0 ){
-				break;
-			}
-			this->buffer = tmp_buffer;
-			this->pos = 0;
-			uint8_t firm_id = getUint8();
-			string trader_tag = getChars(3);
-			uint32_t qty = getUint32();
-			Trade t(firm_id, trader_tag, qty);
-			v.push_back(t);
+	// read til termination characters
+	/// {{{
+		string getMaxChars(){
+			string s;
+			return s;
 		}
-		return std::move(v);
-	}
+
+		vector<Trade> getTrades(){
+			vector<Trade> v;
+			uint8_t tmp_buffer[8];
+			for(;;){
+				f.read((char*)tmp_buffer, 8);
+				string s((const char*)tmp_buffer, 8);
+
+				// Is it end of repeated group of trades?
+				if( s.compare(termination) == 0 ){
+					break;
+				}
+				
+				uint8_t firm_id = getUint8();
+				string trader_tag = getChars(3);
+				uint32_t qty = getUint32();
+				Trade t(firm_id, trader_tag, qty);
+				v.push_back(t);
+			}
+			return std::move(v);
+		}
+	/// }}}
 private:
 	ifstream f;
-	uint8_t* buffer;
-	int pos;
+	vector<unsigned char> buffer; //uint8_t* buffer;
 	string termination;
 };
 
 class Header{
 public:
-	Header(string filename) : header_size(22){	
-		 
+	Header(string filename) : header_size(22){		 
 		this->br = new BytesReader(filename);		
 	}
 
@@ -160,7 +141,6 @@ public:
 	OrderEntryMessage(): fix_size(37){}
 
 	void init(Header* hdr);
-	
 
 private:
 	Header *hdr;
@@ -199,10 +179,7 @@ public:
 
 	void init(Header* hdr);
 
-
-	~OrderFillMessage(){
-		
-	}
+	~OrderFillMessage(){}
 private:
 	Header *hdr;
 	uint32_t order_id;
