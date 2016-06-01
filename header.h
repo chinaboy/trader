@@ -36,8 +36,7 @@ public:
 	}
 
 	uint8_t getUint8(){
-		uint8_t result;
-		f.get((char)result);
+		uint8_t result = f.get();
 		return result;
 	}
 
