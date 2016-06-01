@@ -8,7 +8,7 @@ void Header::read(){
 	uint8_t first = this->br->getUint8();
 	uint8_t second = this->br->getUint8();
 	this->msg_type = this->br->getUint8();			
-	cout << std::oct << first << "\t" << std::oct << second << endl << std::oct << "S" << "\t" << std::oct << "T" << endl;
+	cout << std::oct << unsigned( first ) << "\t" << std::oct << unsigned( second ) << endl << std::oct << "S" << "\t" << std::oct << "T" << endl << unsigned( this->msg_type ) << endl;
 	return;
 	this->sequence_id = this->br->getUint64(); 
 	this->timestamp = this->br->getUint64();
