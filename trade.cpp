@@ -2,14 +2,9 @@
 
 
 void Header::read(){
-	this->br->setBufferSize(header_size);
-	 
-	//this->marker = this->br->getUint16();
-	uint8_t first = this->br->getUint8();
-	uint8_t second = this->br->getUint8();
+	this->br->setBufferSize(header_size); 
+	this->marker = this->br->getUint16();
 	this->msg_type = this->br->getUint8();			
-	cout << std::oct << unsigned( first ) << "\t" << std::oct << unsigned( second ) << endl << std::oct << "S" << "\t" << std::oct << "T" << endl << unsigned( this->msg_type ) << endl;
-	return;
 	this->sequence_id = this->br->getUint64(); 
 	this->timestamp = this->br->getUint64();
 	this->msg_direction = this->br->getUint8();

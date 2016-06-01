@@ -37,6 +37,8 @@ public:
 
 	~BytesReader(){
 		delete[] this->buffer;
+
+		this->f.close();
 	}
 
 	void setBufferSize(int fix_size){
@@ -45,6 +47,12 @@ public:
 		}
 		this->buffer = new uint8_t[fix_size];
 		this->f.read((char*)buffer, fix_size);
+	}
+
+	void printHeader(){
+		for(int i=0; i<22; i++){
+			cout << hex << this->buffer[i];
+		}
 	}
 
 	uint8_t getUint8(){
@@ -61,17 +69,17 @@ public:
 	}
 
 	uint32_t getUint32(){	
-		uint8_t* buffer = this->buffer + this->pos;
-		uint32_t result = ((uint32_t)buffer[3] << 24) | ((uint32_t)buffer[2] << 16) | ((uint32_t)buffer[1] << 8) | buffer[0];
+		uint8_t* tmp_buffer = this->buffer + this->pos;
+		uint32_t result = ((uint32_t)tmp_buffer[3] << 24) | ((uint32_t)tmp_buffer[2] << 16) | ((uint32_t)tmp_buffer[1] << 8) | tmp_buffer[0];
 		this->pos += 4;
 		return result;
 	}
 
 	uint64_t getUint64(){
 		int pos = this->pos;
-		uint8_t* buffer = this->buffer + this->pos;
-		uint64_t result = ((uint64_t)buffer[7] << 56) | ((uint64_t)buffer[6] << 48) | ((uint64_t)buffer[5] << 40) |((uint64_t)buffer[4] << 32 ) |
-					((uint64_t)buffer[3] << 24) | ((uint64_t)buffer[2] << 16) | ((uint64_t)buffer[1] << 8) | buffer[0];
+		uint8_t* tmp_buffer = this->buffer + this->pos;
+		uint64_t result = ((uint64_t)tmp_buffer[7] << 56) | ((uint64_t)tmp_buffer[6] << 48) | ((uint64_t)tmp_buffer[5] << 40) |((uint64_t)tmp_buffer[4] << 32 ) |
+					((uint64_t)tmp_buffer[3] << 24) | ((uint64_t)tmp_buffer[2] << 16) | ((uint64_t)tmp_buffer[1] << 8) | tmp_buffer[0];
 		this->pos += 8;
 		return result;
 	}
@@ -89,14 +97,14 @@ public:
 
 	vector<Trade> getTrades(){
 		vector<Trade> v;
-		uint8_t buffer[8];
+		uint8_t tmp_buffer[8];
 		for(;;){
-			f.read((char*)buffer, 8);
-			string s((const char*)buffer, 8);
+			f.read((char*)tmp_buffer, 8);
+			string s((const char*)tmp_buffer, 8);
 			if( s.compare(termination) == 0 ){
 				break;
 			}
-			this->buffer = buffer;
+			this->buffer = tmp_buffer;
 			this->pos = 0;
 			uint8_t firm_id = getUint8();
 			string trader_tag = getChars(3);
@@ -133,6 +141,8 @@ public:
 	}	
 
 	BytesReader * getBytesReader(){return br;}
+
+	void printHeader(){ this->br->printHeader();}
 private:
 	ifstream f;
 	int header_size;
