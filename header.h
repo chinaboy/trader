@@ -82,7 +82,7 @@ public:
 
 	uint16_t getUint16(){		 
 		uint16_t result;
-		char s[2];
+		char s[3];
 		f.get( (char*) s, 3 );
 		result = ((uint16_t) s[1] << 8 ) | (uint16_t) s[0];
 		return result;
@@ -90,14 +90,14 @@ public:
 
 	uint32_t getUint32(){	
 		uint32_t result;
-		char s[4];
+		char s[5];
 		f.get( (char*) s, 5 );
 		result = ((uint32_t) s[3] << 24 ) | ((uint32_t) s[2] << 16 ) | ((uint32_t) s[1] << 8 ) | (uint32_t) s[0];
 		return result;
 	}
 
 	uint64_t getUint64(){
-		char s[8];
+		char s[9];
 		f.get( (char*) s, 9 );
 		uint64_t result = ((uint64_t) s[7] << 56 ) | ((uint64_t) s[6] << 48 ) | ((uint64_t) s[5] << 40 ) | ((uint64_t) s[4] << 32 ) | ((uint64_t) s[3] << 24 ) | ((uint64_t) s[2] << 16 ) | ((uint64_t) s[1] << 8 ) | (uint64_t) s[0];
 		return result;
