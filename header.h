@@ -79,11 +79,23 @@ public:
 		}
 	}
 
-	void setBufferSize(int n){
+	bool good(){
+		if(f)
+			return true;
+		return false;
+	}
+
+	bool setBufferSize(int n){
 		buffer = new char[n+1];
 		pos = 0;
 
 		f.read( buffer, n );
+		if(!f){
+			delete[] buffer;
+			cout<< "error: only " << f.gcount() << " could be read";
+			return false;
+		}
+		return true;
 	}
 
 	void reset(){

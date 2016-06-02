@@ -3,11 +3,9 @@
 void Header::read(){
 	//this->marker = this->br->getUint16();
 
-	this->br->setBufferSize( header_size );
+	if( ! this->br->setBufferSize( header_size ) )
+		return ;
 
-
-	if( f.eof())
-		return;
 	char s = this->br->getUint8();
 	char t = this->br->getUint8();
 	assert( s=='S' && t=='T' );
