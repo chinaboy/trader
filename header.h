@@ -36,7 +36,8 @@ public:
 	}
 
 	void print(){
-
+		cout << packet << ", " << oem_count << ", " << oam_count << ", " << ofm_count << ", " 
+				<< endl;
 	}
 
 	int oem_count, oam_count, packet, ofm_count ;
@@ -98,7 +99,7 @@ public:
 		f.read( buffer, n );
 		if(!f){
 			//delete[] buffer;
-			cout<< "error: only " << f.gcount() << " could be read";
+			//cout<< "error: only " << f.gcount() << " could be read";
 			//throw runtime_error("can't read anything");
 			return false;
 		}

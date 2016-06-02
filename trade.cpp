@@ -24,13 +24,13 @@ void Header::read(){
 }
 
 void Header::op(){
-	printHeader();
+	//printHeader();
 	switch(unsigned(this->msg_type)){
 		case 1:
 			{
 				OrderEntryMessage oem;
 				oem.init(this);
-				oem.printOEM();
+				//oem.printOEM();
 				stats.incrementOEM();
 			}
 			break;
@@ -38,7 +38,7 @@ void Header::op(){
 			{
 				OrderAckMessage oam;
 				oam.init(this);
-				oam.printOAM();
+				//oam.printOAM();
 				stats.incrementOAM();
 				break;
 			}
@@ -46,7 +46,7 @@ void Header::op(){
 			{
 				OrderFillMessage ofm;
 				ofm.init(this);
-				ofm.printOFM();
+				//ofm.printOFM();
 				stats.incrementOFM();
 				break;
 			}
@@ -131,12 +131,13 @@ int parseStream(string stream){
 		hdr.read();
 		//break;
 	}
+	hdr.printStats();
 	return 1;
 }
 
 int main(int argc, char* argv[]){
 	if(argc > 1){
-		cout << argv[1] << endl;
+		//cout << argv[1] << endl;
 		string file_stream(argv[1]);
 		parseStream(file_stream);
 
