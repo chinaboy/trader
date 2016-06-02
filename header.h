@@ -13,13 +13,15 @@ class OrderFillMessage;
 
 class Trade{
 public:
-	Trade(uint8_t firm_id, string trader_tag, uint32_t qty){
-		this->firm_id = firm_id;
-		this->trader_tag = trader_tag;
-		this->qty = qty;
+	Trade(char *tmp_buffer){
+		this->firm_id = tmp_buffer[0];
+		this->trader_tag[2] = tmp_buffer[1];
+		this->trader_tag[1] = tmp_buffer[2];
+		this->trader_tag[0] = tmp_buffer[3];
+		this->qty = ((uint32_t) tmp_buffer[7] << 24 ) + ((uint32_t) tmp_buffer[6] << 16 ) + ((uint32_t) tmp_buffer[5] << 8 ) + (uint32_t) tmp_buffer[4];
 	}
 	uint8_t firm_id;
-	string trader_tag; // char [3]
+	char trader_tag[3]; // char [3]
 	uint32_t qty;
 };
 
@@ -27,7 +29,7 @@ class BytesReader{
 public:
 	BytesReader(string stream){
 		this->f.open(stream.c_str(), ifstream::binary);
-		termination.assign("DBDBDBDB");
+		termination.assign("BDBDBDBD"); // in reverse
 		 
 	}
 
@@ -44,7 +46,7 @@ public:
 		uint16_t result;
 		char s[2];
 		f.get( (char*) s, 2 );
-		result = ((uint16_t) s[1] << 8 ) + (uint16_t) s[0];
+		result = ((uint16_t) s[0] << 8 ) + (uint16_t) s[1];
 		return result;
 	}
 
@@ -52,45 +54,52 @@ public:
 		uint32_t result;
 		char s[4];
 		f.get( (char*) s, 4 );
-		result = ((uint32_t) s[3] << 24 ) + ((uint32_t) s[2] << 16 ) + ((uint32_t) s[1] << 8 ) + (uint32_t) s[0];
+		result = ((uint32_t) s[0] << 24 ) + ((uint32_t) s[1] << 16 ) + ((uint32_t) s[2] << 8 ) + (uint32_t) s[3];
 		return result;
 	}
 
 	uint64_t getUint64(){
 		uint64_t low = (uint64_t)getUint32();
 		uint64_t high = (uint64_t)getUint32();
-		return (high << 32 | low);
+		return (low << 32 | high);
 	}
 
-	string getChars(size_t n){
-		string s;
-		 
-		return s;
+	vector<char> getChars(size_t n){
+		vector<char> v(n);
+		for(int i=0; i<n; i++)
+			v.push_back( f.get() );
+		reverse(v.begin(), v.end());
+		return std::move(v);
 	}	
 
 	// read til termination characters
 	/// {{{
-		string getMaxChars(){
-			string s;
-			return s;
+		vector<char> getMaxChars(int limit){
+			vector<char> v;
+			int readChars = 0;
+			while( readChars < limit ){
+				v.push_back( f.get() );
+				readChars ++;
+				if( v.size() < termination.length() )
+					continue;
+				if( termination.compare(0, string:npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 )
+					break;
+			}
+			return std::move(v);
 		}
 
 		vector<Trade> getTrades(){
 			vector<Trade> v;
-			uint8_t tmp_buffer[8];
+			char tmp_buffer[8];
 			for(;;){
 				f.read((char*)tmp_buffer, 8);
-				string s((const char*)tmp_buffer, 8);
 
 				// Is it end of repeated group of trades?
-				if( s.compare(termination) == 0 ){
+				if( termination.compare( 0, string:npos, (char*)tmp_buffer, 8 ) == 0 ){
 					break;
 				}
 				
-				uint8_t firm_id = getUint8();
-				string trader_tag = getChars(3);
-				uint32_t qty = getUint32();
-				Trade t(firm_id, trader_tag, qty);
+				Trade t(tmp_buffer);
 				v.push_back(t);
 			}
 			return std::move(v);
@@ -100,7 +109,6 @@ public:
 
 private:
 	ifstream f;
-	vector<unsigned char> buffer; //uint8_t* buffer;
 	string termination;
 };
 
