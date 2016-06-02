@@ -114,7 +114,7 @@ public:
 	}
 
 	uint16_t getUint16(){	
-		assert( pos + 2 < buffer_size );	 
+		assert( pos + 2 <= buffer_size );	 
 		uint16_t result;
 		char s[3];
 		s[0] = buffer[pos];
