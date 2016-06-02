@@ -191,7 +191,7 @@ private:
 
 class OrderEntryMessage{
 public:
-	OrderEntryMessage(): fix_size(37){}
+	OrderEntryMessage(): fix_size(36){}
 
 	void init(Header* hdr);
 
