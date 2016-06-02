@@ -97,6 +97,8 @@ public:
 	}
 
 	uint64_t getUint64(){
+		char s[8];
+		f.get( (char*) s, 9 );
 		uint64_t result = ((uint64_t) s[7] << 56 ) + ((uint64_t) s[6] << 48 ) + ((uint64_t) s[5] << 40 ) + ((uint64_t) s[4] << 32 ) + ((uint64_t) s[3] << 24 ) + ((uint64_t) s[2] << 16 ) + ((uint64_t) s[1] << 8 ) + (uint64_t) s[0];
 		return result;
 	}
