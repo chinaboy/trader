@@ -5,6 +5,7 @@
 #include <vector> 
 #include <stdexcept> 
 #include <algorithm> 
+#include <assert.h> 
 
 using namespace std;
 
