@@ -46,7 +46,7 @@ public:
 	uint16_t getUint16(){		 
 		uint16_t result;
 		char s[2];
-		f.get( (char*) s, 2 );
+		f.get( (char*) s, 3 );
 		result = ((uint16_t) s[0] << 8 ) + (uint16_t) s[1];
 		return result;
 	}
@@ -54,7 +54,7 @@ public:
 	uint32_t getUint32(){	
 		uint32_t result;
 		char s[4];
-		f.get( (char*) s, 4 );
+		f.get( (char*) s, 5 );
 		result = ((uint32_t) s[0] << 24 ) + ((uint32_t) s[1] << 16 ) + ((uint32_t) s[2] << 8 ) + (uint32_t) s[3];
 		return result;
 	}
