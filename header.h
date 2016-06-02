@@ -156,6 +156,10 @@ public:
 	}
 
 	vector<char> getChars(int n){
+		if( n + pos > buffer_size ){
+
+			cout << "before assert exception: n = " << n << " pos = " << pos << " buffer_size = " << buffer_size << endl; 
+		}
 		assert( n + pos <= buffer_size );
 		vector<char> v;
 		v.reserve(n);
@@ -225,7 +229,7 @@ public:
 	BytesReader * getBytesReader(){return br;}
 
 	void printHeader(){ 
-		cout<< "message type is " << unsigned(msg_type) << ", sequence_id is " << sequence_id << ", timestamp is " << timestamp << ", direction is " << unsigned(msg_direction) << ", msg_len is " << msg_len << endl;
+		cout<< "message type is " << unsigned(msg_type) << ", sequence_id is " << sequence_id << ", timestamp is " << hex << timestamp << ", direction is " << unsigned(msg_direction) << ", msg_len is " << msg_len << endl;
 	}
 
 	void printStats(){
