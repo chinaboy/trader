@@ -62,7 +62,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	BytesReader *br = hdr->getBytesReader();
 
 	br->reset();
-	if( !br->setBufferSize( fix_size ) ))
+	if( !br->setBufferSize( fix_size ) )
 		return;
 	
 	this->price = br->getUint64();
