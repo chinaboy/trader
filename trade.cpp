@@ -40,6 +40,7 @@ void Header::op(){
 			}
 		default:
 			string error_str = "unknown message type " + ( this->msg_type );
+			cout << error_str << endl;
 			throw runtime_error(error_str);
 			break;
 	}
