@@ -179,7 +179,7 @@ public:
 	
 
 	bool next(){
-		return ! this->f.eof();
+		return this->f.good();
 	}	
 
 	BytesReader * getBytesReader(){return br;}
