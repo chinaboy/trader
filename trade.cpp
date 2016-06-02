@@ -75,7 +75,7 @@ void Header::op(){
 				//oem.printOEM();
 				stats.incrementOEM();
 
-				OrderEntry oe(hdr->sequence_id + 1, this->client_assigned_id, this->trader_tag, this->instrument, this->qty, 0);
+				OrderEntry oe(sequence_id + 1, this->client_assigned_id, this->trader_tag, this->instrument, this->qty, 0);
 				stats.filled_orders_map[ oem.client_assigned_id ] = std::move(oe) ;
 			}
 			break;
@@ -91,7 +91,7 @@ void Header::op(){
 				if( got != stats.filled_orders_map.end() ){
 					vector<OrderEntry> oe = stats.filled_orders_map[oam.client_id];
 					for( auto entry:oe ){
-						if( entry.sequence_id == oam.sequence_id ){
+						if( entry.sequence_id == sequence_id ){
 							entry.order_id = oam.order_id;
 							entry.setAcked();
 							OrderEntry goodOrder = entry;

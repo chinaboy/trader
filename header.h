@@ -70,6 +70,8 @@ public:
 		packet ++;
 	}
 
+	string calculateActiveTrader();
+	
 	void print(){
 		string most_active = calculateActiveTrader();
 		cout << packet << ", " << oem_count << ", " << oam_count << ", " << ofm_count << ", " << most_active 
