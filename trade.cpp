@@ -105,7 +105,7 @@ void OrderFillMessage::init(Header * hdr){
 	BytesReader *br = hdr->getBytesReader();
 
 	br->reset();
-	if( !br->setBufferSize( hdr->getMsgLen() )
+	if( !br->setBufferSize( hdr->getMsgLen() ) )
 		return ;
 
 	this->order_id = br->getUint32();
