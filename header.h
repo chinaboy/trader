@@ -156,7 +156,7 @@ public:
 	}
 
 	vector<char> getChars(int n){
-		assert( n + pos < buffer_size );
+		assert( n + pos <= buffer_size );
 		vector<char> v;
 		v.reserve(n);
 		for(int i=0; i < n; i++)
