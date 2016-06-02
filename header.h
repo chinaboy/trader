@@ -67,7 +67,7 @@ public:
 class BytesReader{
 public:
 	BytesReader(string stream){
-		this->f.open(stream.c_str(), ifstream::binary);
+		this->f.open(stream.c_str(), ios::in | ifstream::binary);
 		termination.assign("DBDBDBDB"); 
 		 
 	}
@@ -94,17 +94,18 @@ public:
 		if(!f){
 			delete[] buffer;
 			cout<< "error: only " << f.gcount() << " could be read";
+			throw runtime_error("can't read anything");
 			return false;
 		}
 		return true;
 	}
 
 	void reset(){
-		if( buffer ){
+		//if( buffer ){
 			delete[] buffer;
 			pos = 0;
 			buffer_size = 0;
-		}
+		//}
 	}
 
 	uint8_t getUint8(){
@@ -236,7 +237,7 @@ public:
 		stats.print();
 	}
 
-	uint16_t getMsgLen(){return msg_len;}
+	int getMsgLen(){return (int)msg_len;}
 private:
 	Stats stats;
 	ifstream f;
