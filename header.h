@@ -74,18 +74,36 @@ public:
 
 	~BytesReader(){
 		this->f.close();
+		if( buffer ){
+			delete[] buffer;
+		}
+	}
+
+	void setBufferSize(int n){
+		buffer = new char[n+1];
+		pos = 0;
+
+		f.read( buffer, fix_size );
+	}
+
+	void reset(){
+		if( buffer ){
+			delete[] buffer;
+			pos = 0;
+		}
 	}
 
 	uint8_t getUint8(){
-		char result = f.get();
+		char result = buffer[pos++];
 		return (uint8_t)result;
 	}
 
 	uint16_t getUint16(){		 
 		uint16_t result;
 		char s[3];
-		s[0] = f.get();
-		s[1] = f.get();
+		s[0] = buffer[pos];
+		s[1] = buffer[pos+1];
+		pos++, pos++;
 		result = ((uint16_t) s[1] << 8 ) | (uint16_t) s[0];
 		return result;
 	}
@@ -94,10 +112,11 @@ public:
 		uint32_t result;
 		char s[5];
 		//f.get( (char*) s, 5 );
-		s[0] = f.get();
-		s[1] = f.get();
-		s[2] = f.get();
-		s[3] = f.get();
+		s[0] = buffer[pos];
+		s[1] = buffer[pos+1];
+		s[2] = buffer[pos+2];
+		s[3] = buffer[pos+3];
+		pos += 4;
 		result = ((uint32_t) s[3] << 24 ) | ((uint32_t) s[2] << 16 ) | ((uint32_t) s[1] << 8 ) | (uint32_t) s[0];
 		return result;
 	}
@@ -105,14 +124,15 @@ public:
 	uint64_t getUint64(){
 		char s[9];
 		//f.get( (char*) s, 9 );
-		s[0] = f.get();
-		s[1] = f.get();
-		s[2] = f.get();
-		s[3] = f.get();
-		s[4] = f.get();
-		s[5] = f.get();
-		s[6] = f.get();
-		s[7] = f.get();		
+		s[0] = buffer[pos];
+		s[1] = buffer[pos+1];
+		s[2] = buffer[pos+2];
+		s[3] = buffer[pos+3];
+		s[4] = buffer[pos+4];
+		s[5] = buffer[pos+5];
+		s[6] = buffer[pos+6];
+		s[7] = buffer[pos+7];	
+		pos+= 8;	
 		uint64_t result = ((uint64_t) s[7] << 56 ) | ((uint64_t) s[6] << 48 ) | ((uint64_t) s[5] << 40 ) | ((uint64_t) s[4] << 32 ) | ((uint64_t) s[3] << 24 ) | ((uint64_t) s[2] << 16 ) | ((uint64_t) s[1] << 8 ) | (uint64_t) s[0];
 		return result;
 	}
@@ -121,7 +141,7 @@ public:
 		vector<char> v;
 		v.reserve(n);
 		for(int i=0; i < n; i++)
-			v.push_back( f.get() );
+			v.push_back( buffer[pos++] );
 		//reverse(v.begin(), v.end());
 		return std::move(v);
 	}	
@@ -154,12 +174,12 @@ public:
 		void consumeTermination(){
 			vector<char> v = getChars(8);
 			string end = string(v.begin(), v.end());
-			if( end.compare(termination) != 0 ){
-				string error_str = end + " doesn't match termination string";
-				throw runtime_error(error_str);
-			}
+			assert( end.compare(termination) != 0  );
+			 
 		}
 private:
+	int pos;
+	char * buffer;
 	ifstream f;
 	string termination;
 };

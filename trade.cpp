@@ -2,13 +2,14 @@
 
 void Header::read(){
 	//this->marker = this->br->getUint16();
+
+	this->br->setBufferSize( fix_size );
+
+
 	if( f.eof())
 		return;
 	char s = this->br->getUint8();
 	char t = this->br->getUint8();
-
-	if( f.eof())
-		return;
 	assert( s=='S' && t=='T' );
 		
 	this->msg_type = this->br->getUint8();			
@@ -61,7 +62,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	//this.hdr = std::move(hdr);
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
-	 
+	br->setBufferSize( fix_size );
 	
 	this->price = br->getUint64();
 	this->qty = br->getUint32();
@@ -85,6 +86,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 void OrderAckMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
+	br->setBufferSize( fix_size );
 	
 	this->order_id = br->getUint32();
 	this->client_id = br->getUint64();
@@ -97,6 +99,7 @@ void OrderAckMessage::init(Header * hdr){
 void OrderFillMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
+	br->setBufferSize( fix_size );
 
 	this->order_id = br->getUint32();
 	this->fill_price = br->getUint64();
