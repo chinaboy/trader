@@ -13,6 +13,7 @@ int parseStream(string stream){
 	ifstream f;
 	f.open(stream.c_str(), ifstream::binary);
 
+	char c;
 	while( f.get(c) ){
 		 
 		cout << hex << c << ' ' ;
