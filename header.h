@@ -114,7 +114,7 @@ public:
 	/// {{{
 		vector<char> getMaxChars(int size){
 			vector<char> v(size);
-			f.read((char *) &v.data[0], size);			 
+			f.read(v.data(), size);			 
 			return std::move(v);
 		}
 
