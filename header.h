@@ -87,6 +87,7 @@ public:
 
 	bool setBufferSize(int n){
 		buffer = new char[n+1];
+		buffer_size = n;
 		pos = 0;
 
 		f.read( buffer, n );
@@ -102,15 +103,18 @@ public:
 		if( buffer ){
 			delete[] buffer;
 			pos = 0;
+			buffer_size = 0;
 		}
 	}
 
 	uint8_t getUint8(){
+		assert( pos + 1 < buffer_size );
 		char result = buffer[pos++];
 		return (uint8_t)result;
 	}
 
-	uint16_t getUint16(){		 
+	uint16_t getUint16(){	
+		assert( pos + 2 < buffer_size );	 
 		uint16_t result;
 		char s[3];
 		s[0] = buffer[pos];
@@ -121,6 +125,7 @@ public:
 	}
 
 	uint32_t getUint32(){	
+		assert( pos + 4 < buffer_size );
 		uint32_t result;
 		char s[5];
 		//f.get( (char*) s, 5 );
@@ -134,6 +139,7 @@ public:
 	}
 
 	uint64_t getUint64(){
+		assert( pos + 8 < buffer_size );
 		char s[9];
 		//f.get( (char*) s, 9 );
 		s[0] = buffer[pos];
@@ -150,6 +156,7 @@ public:
 	}
 
 	vector<char> getChars(int n){
+		assert( n + pos < buffer_size );
 		vector<char> v;
 		v.reserve(n);
 		for(int i=0; i < n; i++)
@@ -190,6 +197,7 @@ public:
 			 
 		}
 private:
+	int buffer_size;
 	int pos;
 	char * buffer;
 	ifstream f;
