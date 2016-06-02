@@ -99,7 +99,7 @@ public:
 	uint64_t getUint64(){
 		uint64_t low = (uint64_t)getUint32();
 		uint64_t high = (uint64_t)getUint32();
-		return (low << 32 | high);
+		return (high << 32 | low);
 	}
 
 	vector<char> getChars(int n){
@@ -116,7 +116,8 @@ public:
 		vector<char> getMaxChars(int size){
 			vector<char> v;
 			v.reserve(size);
-			f.read(v.data(), size);			 
+			for(int i=0; i<size; i++)
+				v[i] = f.get();			 
 			return std::move(v);
 		}
 
