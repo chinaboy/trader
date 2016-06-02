@@ -71,7 +71,8 @@ public:
 	}
 
 	void print(){
-		cout << packet << ", " << oem_count << ", " << oam_count << ", " << ofm_count << ", " 
+		string most_active = calculateActiveTrader();
+		cout << packet << ", " << oem_count << ", " << oam_count << ", " << ofm_count << ", " << most_active 
 				<< endl;
 	}
 
@@ -341,7 +342,7 @@ public:
 		cout << "order_id is " << order_id << ", client_id is " << client_id << ", order_status is " << unsigned(order_status) << ", reject_code is " << unsigned(reject_code) << endl;
 	}
 
-private:
+
 	Header *hdr;
 	uint32_t order_id;
 	uint64_t client_id;

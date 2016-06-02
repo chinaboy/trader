@@ -16,6 +16,19 @@ string Stats::getOriginalTrader( uint32_t order_id){
 	return s;
 }
 
+string Stats::calculateActiveTrader(){
+	string trader ;
+	uint32_t max = 0;
+
+	for ( auto it = trader_fills_map.begin(); it != trader_fills_map.end(); ++it ){
+		if( max < it->second){
+			max = it->second;
+			trader = it->first;
+		}
+	}
+	return trader;
+}
+
 void Stats::addQty(string trader, int fill_qty){
 	if( trader.compare("") == 0){
 		return;
@@ -63,7 +76,7 @@ void Header::op(){
 				stats.incrementOEM();
 
 				OrderEntry oe(hdr->sequence_id + 1, this->client_assigned_id, this->trader_tag, this->instrument, this->qty, 0);
-				stats.filled_orders_map[] = std::move(oe) ;
+				stats.filled_orders_map[ oem.client_assigned_id ] = std::move(oe) ;
 			}
 			break;
 		case 2:
@@ -73,22 +86,20 @@ void Header::op(){
 				//oam.printOAM();
 				stats.incrementOAM();
 				// look into 
-				unordered_map<string, vector<OrderEntry>>::const_iterator got = stats.filled_orders_map.find( oam.client_assigned_id ) ;
+				unordered_map<string, vector<OrderEntry>>::const_iterator got = stats.filled_orders_map.find( oam.client_id ) ;
 
-				if( got == stats.filled_orders_map.end() ){
-					 
-				}else{
-
-					vector<OrderEntry>::const_iterator ve = stats.filled_orders_map[oam.client_assigned_id];
-					for(  ){
+				if( got != stats.filled_orders_map.end() ){
+					vector<OrderEntry> oe = stats.filled_orders_map[oam.client_id];
+					for( auto entry:oe ){
 						if( entry.sequence_id == oam.sequence_id ){
 							entry.order_id = oam.order_id;
+							entry.setAcked();
+							OrderEntry goodOrder = entry;
+							stats.orders_map[oam.order_id] = std::move( goodOrder );
 							break;
 						}
 					}
 				}
-				
-				stats.orders_map[oam.order_id] = std::copy( oa)
 				break;
 			}
 		case 3:
