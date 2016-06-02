@@ -39,8 +39,8 @@ public:
 	}
 
 	uint8_t getUint8(){
-		uint8_t result = f.get();
-		return result;
+		char result = f.get();
+		return (uint8_t)result;
 	}
 
 	uint16_t getUint16(){		 
@@ -69,7 +69,7 @@ public:
 		vector<char> v(n);
 		for(int i=0; i < n; i++)
 			v.push_back( f.get() );
-		reverse(v.begin(), v.end());
+		//reverse(v.begin(), v.end());
 		return std::move(v);
 	}	
 
@@ -83,10 +83,13 @@ public:
 				readChars ++;
 				if( v.size() < termination.length() )
 					continue;
-				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 )
+				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 ){
+					for(auto c:termination)
+						v.pop();
 					break;
+				}
 			}
-			reverse(v.begin(), v.end());
+			//reverse(v.begin(), v.end());
 			return std::move(v);
 		}
 
@@ -137,7 +140,7 @@ public:
 	BytesReader * getBytesReader(){return br;}
 
 	void printHeader(){ 
-		cout<< "message type is " << msg_type << ", sequence_id is " << sequence_id << ", timestamp is " << timestamp << ", direction is " << msg_direction << ", msg_len is " << msg_len << endl;
+		cout<< "message type is " << unsigned(msg_type) << ", sequence_id is " << sequence_id << ", timestamp is " << timestamp << ", direction is " << unsigned(msg_direction) << ", msg_len is " << msg_len << endl;
 	}
 private:
 	ifstream f;
@@ -158,8 +161,8 @@ public:
 	void init(Header* hdr);
 
 	void printOEM(){
-		cout << "price is " << price << ", qty is " << qty << ", instrument is " << string(instrument.begin(), instrument.end()) << ", side is " << side << ", client_assigned_id is " << client_assigned_id
-			<< ", time_in_force is " << time_in_force << ", trader_tag is " << string(trader_tag.begin(), trader_tag.end() ) << ", firm_id is " << firm_id << ", firm is " << string(firm.begin(), firm.end()) << endl;
+		cout << "price is " << price << ", qty is " << qty << ", instrument is " << string(instrument.begin(), instrument.end()) << ", side is " << unsigned(side) << ", client_assigned_id is " << client_assigned_id
+			<< ", time_in_force is " << unsigned(time_in_force) << ", trader_tag is " << string(trader_tag.begin(), trader_tag.end() ) << ", firm_id is " << unsigned(firm_id) << ", firm is " << string(firm.begin(), firm.end()) << endl;
 	}
 private:
 	Header *hdr;
