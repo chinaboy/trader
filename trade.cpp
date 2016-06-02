@@ -71,7 +71,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 
 	// read until termination string
 	int remain = (int)(hdr->getMsgLen() ) - fix_size - 8; // minus fix size fields and termination string
-	this->firm = br->getMaxChars(remain);
+	this->firm = br->getChars(remain);
 	br->consumeTermination();
 }
 
