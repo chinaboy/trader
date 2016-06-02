@@ -88,8 +88,8 @@ void Header::op(){
 				// look into 
 				unordered_map<string, vector<OrderEntry>>::const_iterator got = stats.filled_orders_map.find( oam.client_id ) ;
 
-				if( got != stats.filled_orders_map.end() ){
-					vector<OrderEntry> oe = stats.filled_orders_map[oam.client_id];
+				if( got != stats.filled_order_map.end() ){
+					vector<OrderEntry> oe = stats.filled_order_map[oam.client_id];
 					for( auto entry:oe ){
 						if( entry.sequence_id == sequence_id ){
 							entry.order_id = oam.order_id;

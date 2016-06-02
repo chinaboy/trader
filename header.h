@@ -6,6 +6,7 @@
 #include <stdexcept> 
 #include <algorithm> 
 #include <assert.h> 
+#include <unordered_map> 
 
 using namespace std;
 
@@ -71,7 +72,7 @@ public:
 	}
 
 	string calculateActiveTrader();
-	
+
 	void print(){
 		string most_active = calculateActiveTrader();
 		cout << packet << ", " << oem_count << ", " << oam_count << ", " << ofm_count << ", " << most_active 
