@@ -23,9 +23,9 @@ public:
 	}
 
 	void printTrade(){
-		cout << "firm_id is " << firm_id << ", trader_tag is " << trader_tag[0] << trader_tag[1] << trader_tag[2] << ", qty is " << qty << endl;
+		cout << "firm_id is " << unsigned(firm_id) << ", trader_tag is " << trader_tag[0] << trader_tag[1] << trader_tag[2] << ", qty is " << qty << endl;
 	}
-	
+
 	uint8_t firm_id;
 	char trader_tag[3]; // char [3]
 	uint32_t qty;
