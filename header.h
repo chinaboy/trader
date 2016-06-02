@@ -108,14 +108,14 @@ public:
 
 	uint8_t getUint8(){
 		assert( pos + 1 <= buffer_size );
-		char result = buffer[pos++];
+		unsigned char result = buffer[pos++];
 		return (uint8_t)result;
 	}
 
 	uint16_t getUint16(){	
 		assert( pos + 2 <= buffer_size );	 
 		uint16_t result;
-		char s[3];
+		unsigned char s[3];
 		s[0] = buffer[pos];
 		s[1] = buffer[pos+1];
 		pos++, pos++;
@@ -126,7 +126,7 @@ public:
 	uint32_t getUint32(){	
 		assert( pos + 4 <= buffer_size );
 		uint32_t result;
-		char s[5];
+		unsigned char s[5];
 		//f.get( (char*) s, 5 );
 		s[0] = buffer[pos];
 		s[1] = buffer[pos+1];
@@ -139,7 +139,7 @@ public:
 
 	uint64_t getUint64(){
 		assert( pos + 8 <= buffer_size );
-		char s[9];
+		unsigned char s[9];
 		//f.get( (char*) s, 9 );
 		s[0] = buffer[pos];
 		s[1] = buffer[pos+1];
