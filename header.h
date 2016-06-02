@@ -193,7 +193,7 @@ public:
 		void consumeTermination(){
 			vector<char> v = getChars(8);
 			string end = string(v.begin(), v.end());
-			assert( end.compare(termination) != 0  );
+			assert( end.compare(termination) == 0  );
 			 
 		}
 private:
