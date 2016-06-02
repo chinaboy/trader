@@ -24,12 +24,14 @@ void Header::op(){
 			{
 				OrderAckMessage oam;
 				oam.init(this);
+				oam.printOAM();
 				break;
 			}
 		case 3:
 			{
 				OrderFillMessage ofm;
 				ofm.init(this);
+				ofm.printOFM();
 				break;
 			}
 		default:
