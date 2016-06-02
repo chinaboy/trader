@@ -86,7 +86,7 @@ void Header::op(){
 				//oam.printOAM();
 				stats.incrementOAM();
 				// look into 
-				unordered_map<string, vector<OrderEntry>>::const_iterator got = stats.filled_orders_map.find( oam.client_id ) ;
+				unordered_map<string, vector<OrderEntry>>::iterator got = stats.filled_orders_map.find( oam.client_id ) ;
 
 				if( got != stats.filled_order_map.end() ){
 					vector<OrderEntry> oe = stats.filled_order_map[oam.client_id];
