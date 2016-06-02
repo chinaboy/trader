@@ -3,8 +3,10 @@
 void Header::read(){
 	//this->marker = this->br->getUint16();
 
-	if( ! this->br->setBufferSize( header_size ) )
+	if( ! this->br->readBuffer( header_size ) ){
+		setEof();
 		return ;
+	}
 
 	char s = this->br->getUint8();
 	char t = this->br->getUint8();
@@ -62,8 +64,10 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	BytesReader *br = hdr->getBytesReader();
 
 	br->reset();
-	if( !br->setBufferSize( hdr->getMsgLen() ) )
+	if( !br->readBuffer( hdr->getMsgLen() ) ){
+		hdr->setEof();
 		return;
+	}
 	
 	this->price = br->getUint64();
 	this->qty = br->getUint32();
@@ -89,8 +93,10 @@ void OrderAckMessage::init(Header * hdr){
 	BytesReader *br = hdr->getBytesReader();
 
 	br->reset();
-	if( !br->setBufferSize( hdr->getMsgLen() ))
+	if( !br->readBuffer( hdr->getMsgLen() )){
+		hdr->setEof();
 		return;
+	}
 	
 	this->order_id = br->getUint32();
 	this->client_id = br->getUint64();
@@ -105,8 +111,10 @@ void OrderFillMessage::init(Header * hdr){
 	BytesReader *br = hdr->getBytesReader();
 
 	br->reset();
-	if( !br->setBufferSize( hdr->getMsgLen() ) )
+	if( !br->readBuffer( hdr->getMsgLen() ) ){
+		hdr->setEof();
 		return ;
+	}
 
 	this->order_id = br->getUint32();
 	this->fill_price = br->getUint64();

@@ -85,7 +85,7 @@ public:
 		return false;
 	}
 
-	bool setBufferSize(int n){
+	bool readBuffer(int n){
 		buffer = new char[n+1];
 		buffer_size = n;
 		pos = 0;
@@ -94,7 +94,7 @@ public:
 		if(!f){
 			delete[] buffer;
 			cout<< "error: only " << f.gcount() << " could be read";
-			throw runtime_error("can't read anything");
+			//throw runtime_error("can't read anything");
 			return false;
 		}
 		return true;
@@ -212,7 +212,8 @@ private:
 class Header{
 public:
 	Header(string filename) : header_size(22){		 
-		this->br = new BytesReader(filename);		
+		this->br = new BytesReader(filename);	
+		eof = false;	
 	}
 
 	~Header(){
@@ -222,8 +223,11 @@ public:
 	void read();
 	void op();
 	
+	void setEof(){ eof = true; }
 
 	bool next(){
+		if(eof)
+			return false;
 		return this->f.good();
 	}	
 
@@ -238,7 +242,10 @@ public:
 	}
 
 	int getMsgLen(){return (int)msg_len;}
+
+
 private:
+	bool eof;
 	Stats stats;
 	ifstream f;
 	int header_size;
