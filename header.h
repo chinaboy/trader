@@ -70,6 +70,7 @@ public:
 		this->f.open(stream.c_str(), ios::in | ifstream::binary);
 		termination.assign("DBDBDBDB"); 
 		capacity = 1000;
+		buffer = new char[capacity + 1];
 	}
 
 	~BytesReader(){
