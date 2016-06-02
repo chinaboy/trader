@@ -69,7 +69,7 @@ public:
 	BytesReader(string stream){
 		this->f.open(stream.c_str(), ios::in | ifstream::binary);
 		termination.assign("DBDBDBDB"); 
-		 
+		buffer_size = 1000;
 	}
 
 	~BytesReader(){
@@ -86,13 +86,16 @@ public:
 	}
 
 	bool readBuffer(int n){
-		buffer = new char[n+1];
-		buffer_size = n;
+		if( n > buffer_size){
+			delete[] buffer;
+			buffer = new char[n+1];
+			buffer_size = n;
+		}
 		pos = 0;
 
 		f.read( buffer, n );
 		if(!f){
-			delete[] buffer;
+			//delete[] buffer;
 			cout<< "error: only " << f.gcount() << " could be read";
 			//throw runtime_error("can't read anything");
 			return false;
@@ -100,12 +103,9 @@ public:
 		return true;
 	}
 
-	void reset(){
-		//if( buffer ){
-			delete[] buffer;
+	void reset(int n){		 
 			pos = 0;
 			buffer_size = 0;
-		//}
 	}
 
 	uint8_t getUint8(){
