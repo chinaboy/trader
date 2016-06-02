@@ -102,7 +102,7 @@ public:
 		return (low << 32 | high);
 	}
 
-	vector<char> getChars(size_t n){
+	vector<char> getChars(int n){
 		vector<char> v(n);
 		for(int i=0; i < n; i++)
 			v.push_back( f.get() );
@@ -120,8 +120,7 @@ public:
 
 		vector<Trade> getTrades(int no_of_contras){
 			vector<Trade> v;
-			char tmp_buffer[8];
-			for(int i=0; i<no_of_contras; ++i){		
+			for(int i=0; i<no_of_contras; ++i){	
 				Trade t;
 				t.firm_id = getUint8();
 				t.trader_tag = getChars(3);
