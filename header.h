@@ -135,8 +135,11 @@ public:
 
 		void consumeTermination(){
 			vector<char> v = getChars(8);
-			if( string(v.begin(), v.end()).compare(termination) != 0 )
-				throw runtime_error("termination string not match");
+			string end = string(v.begin(), v.end());
+			if( end.compare(termination) != 0 ){
+				string error_str = end + " doesn't match termination string";
+				throw runtime_error(error_str);
+			}
 		}
 private:
 	ifstream f;
