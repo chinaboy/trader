@@ -39,7 +39,7 @@ void Header::op(){
 				break;
 			}
 		default:
-			string error_str = "unknown message type " + ( this->msg_type )
+			string error_str = "unknown message type " + ( this->msg_type );
 			throw runtime_error(error_str);
 			break;
 	}
