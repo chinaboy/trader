@@ -13,7 +13,7 @@ void Header::read(){
 
 void Header::op(){
 	//printHeader();
-	switch(this->msg_type){
+	switch(unsigned(this->msg_type)){
 		case 1:
 			{
 				OrderEntryMessage oem;
@@ -39,7 +39,7 @@ void Header::op(){
 				break;
 			}
 		default:
-			throw runtime_error("unknown message type");
+			throw runtime_error("unknown message type " + string( this->msg_type ));
 	}
 }
 
