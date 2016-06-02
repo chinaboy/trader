@@ -63,7 +63,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
 
-	br->reset();
+ 
 	if( !br->readBuffer( hdr->getMsgLen() ) ){
 		hdr->setEof();
 		return;
@@ -92,7 +92,7 @@ void OrderAckMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
 
-	br->reset();
+	 
 	if( !br->readBuffer( hdr->getMsgLen() )){
 		hdr->setEof();
 		return;
@@ -110,7 +110,7 @@ void OrderFillMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
 
-	br->reset();
+ 
 	if( !br->readBuffer( hdr->getMsgLen() ) ){
 		hdr->setEof();
 		return ;

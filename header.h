@@ -69,7 +69,7 @@ public:
 	BytesReader(string stream){
 		this->f.open(stream.c_str(), ios::in | ifstream::binary);
 		termination.assign("DBDBDBDB"); 
-		buffer_size = 1000;
+		capacity = 1000;
 	}
 
 	~BytesReader(){
@@ -86,10 +86,11 @@ public:
 	}
 
 	bool readBuffer(int n){
-		if( n > buffer_size){
+		buffer_size = n;
+		if( n > capacity){
 			delete[] buffer;
 			buffer = new char[n+1];
-			buffer_size = n;
+			capacity = n;
 		}
 		pos = 0;
 
@@ -103,10 +104,6 @@ public:
 		return true;
 	}
 
-	void reset(int n){		 
-			pos = 0;
-			buffer_size = 0;
-	}
 
 	uint8_t getUint8(){
 		assert( pos + 1 <= buffer_size );
@@ -202,6 +199,7 @@ public:
 			 
 		}
 private:
+	int capacity;
 	int buffer_size;
 	int pos;
 	char * buffer;
