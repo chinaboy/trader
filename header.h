@@ -103,7 +103,8 @@ public:
 	}
 
 	vector<char> getChars(int n){
-		vector<char> v(n);
+		vector<char> v;
+		v.reserve(n);
 		for(int i=0; i < n; i++)
 			v.push_back( f.get() );
 		//reverse(v.begin(), v.end());
@@ -113,7 +114,8 @@ public:
 	// read til termination characters
 	/// {{{
 		vector<char> getMaxChars(int size){
-			vector<char> v(size);
+			vector<char> v;
+			v.reserve(size);
 			f.read(v.data(), size);			 
 			return std::move(v);
 		}
