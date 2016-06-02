@@ -12,13 +12,13 @@ void Header::read(){
 }
 
 void Header::op(){
-	//printHeader();
+	printHeader();
 	switch(unsigned(this->msg_type)){
 		case 1:
 			{
 				OrderEntryMessage oem;
 				oem.init(this);
-				//oem.printOEM();
+				oem.printOEM();
 				stats.incrementOEM();
 			}
 			break;
@@ -26,7 +26,7 @@ void Header::op(){
 			{
 				OrderAckMessage oam;
 				oam.init(this);
-				//oam.printOAM();
+				oam.printOAM();
 				stats.incrementOAM();
 				break;
 			}
@@ -34,7 +34,7 @@ void Header::op(){
 			{
 				OrderFillMessage ofm;
 				ofm.init(this);
-				//ofm.printOFM();
+				ofm.printOFM();
 				stats.incrementOFM();
 				break;
 			}
