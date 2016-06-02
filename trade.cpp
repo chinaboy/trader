@@ -3,7 +3,7 @@
 void Header::read(){
 	//this->marker = this->br->getUint16();
 
-	this->br->setBufferSize( fix_size );
+	this->br->setBufferSize( header_size );
 
 
 	if( f.eof())
