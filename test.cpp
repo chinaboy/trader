@@ -13,9 +13,14 @@ int parseStream(string stream){
 	ifstream f;
 	f.open(stream.c_str(), ifstream::binary);
 
-	while( !f.eof()){
-		cout << hex << f.get() << ' ' ;
-	}
+	while( f.get(c) ){
+		 
+		cout << hex << c << ' ' ;
+
+	} 
+
+	if( f.eof() )
+		cout << "eof reach";
 	cout << endl;
 	return 1;
 }
