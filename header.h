@@ -16,15 +16,27 @@ class Trade;
 
 class OrderEntry{
 public:
-	OrderEntry(){}
 
-	OrderEntry(uint64_t i_sequence_id, uint64_t i_client_id, string i_trader_tag, string i_instrument, uint32_t i_qty, uint32_t i_order_id ){
+	OrderEntry(uint64_t i_sequence_id, uint64_t i_client_id, string i_trader_tag, string i_instrument, uint32_t i_qty ){
 		this->sequence_id = i_sequence_id;
 		this->client_id = i_client_id;
 		this->trader_tag = i_trader_tag;
 		this->instrument = i_instrument;
 		this->qty = i_qty;
+	}
+
+	void setOrderId( uint32_t i_order_id){
 		this->order_id = i_order_id;
+	}
+
+	void setWaiting(){
+		state = 0;
+	}
+	void setAcked(){
+		state = 1;
+	}
+	void setFilled(){
+		state = 2;
 	}
 	uint64_t sequence_id;
 	uint64_t client_id;
@@ -32,6 +44,8 @@ public:
 	string instrument;
 	uint32_t qty;
 	uint32_t order_id;
+	int state ;
+	vector<Trade> contra;
 };
 
 class Stats{
@@ -67,13 +81,14 @@ public:
 
 	unordered_map<string, int> trader_fills_map; // trader tag, filled volume
 
-	dequeue<OrderEntry> order_map; // order ack message { OrderEntry } match on sequence id if status is good
+	//dequeue<OrderEntry> order_map; // order ack message { OrderEntry } match on sequence id if status is good
 												// once filled, should be cleared
 
-	dequeue<OrderEntry> waiting_orders; 				// order entry message wait for confirmation { sequence id + 1 , client id, trader_tag, instrument, qty, fake order id }
+	//dequeue<OrderEntry> waiting_orders; 				// order entry message wait for confirmation { sequence id + 1 , client id, trader_tag, instrument, qty, fake order id }
 														// once confirmed, should be cleared from map
 
-	//unordered_map<uint32_t, > filled_order_map;  // { original trader tag, list of contra traders  }
+	unordered_map<uint64_t, OrderEntry > orders_map;        // order id : order entry
+	unordered_map< uint64_t, vector<OrderEntry> > filled_order_map;  // client id : list of order entry  // { original trader tag, list of contra traders  }
 };
 
 class Trade{
@@ -302,7 +317,6 @@ public:
 		cout << "price is " << price << ", qty is " << qty << ", instrument is " << string(instrument.begin(), instrument.end()) << ", side is " << unsigned(side) << ", client_assigned_id is " << client_assigned_id
 			<< ", time_in_force is " << unsigned(time_in_force) << ", trader_tag is " << string(trader_tag.begin(), trader_tag.end() ) << ", firm_id is " << unsigned(firm_id) << ", firm is " << string(firm.begin(), firm.end()) << endl;
 	}
-private:
 	Header *hdr;
 	
 	uint64_t price;
@@ -352,12 +366,16 @@ public:
 	}
 
 	uint32_t getOrderId( ) { return order_id ; }
+
+	vector<Trade> trades;
+	uint32_t order_id;
+	uint32_t fill_qty;
 private:
 	Header *hdr;
-	uint32_t order_id;
+	
 	uint64_t fill_price;
-	uint32_t fill_qty;
+	
 	uint8_t no_of_contras;
-	vector<Trade> trades;
+	
 	int fix_size;
 };

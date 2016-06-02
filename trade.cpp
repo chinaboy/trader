@@ -1,20 +1,26 @@
 #include "header.h"
 
 void Stats::creditTraders( OrderFillMessage &ofm){
-	vector<string> contra = ofm.getContraTrader();
-	int fill_qty = (int)ofm.getFillQty();
-	for(auto t:contra ){
-		addQty(t, fill_qty);
+	for(auto t:ofm.trades ){
+		addQty(t.trader_tag, t.fill_qty);
 	}
-	addQty( getOriginalTrader( ofm.getOrderId() ), fill_qty);
+	addQty( getOriginalTrader(  ofm.getOrderId() ), ofm.fill_qty;);
 }
 
-void Stats::getOriginalTrader(uint32_t order_id){
-
+string Stats::getOriginalTrader( uint32_t order_id){
+	string s("");
+	unordered_map< uint64_t, vector<OrderEntry> >::const_iterator oe = orders_map.find(order_id);
+	if( oe != orders_map.end() ){
+		s = oe.trader_tag;
+	}
+	return s;
 }
 
 void Stats::addQty(string trader, int fill_qty){
-	unordered_map<string, int>::const_iterator got = trader_fills_map.find( t );
+	if( trader.compare("") == 0){
+		return;
+	}
+	unordered_map<string, int>::const_iterator got = trader_fills_map.find( trader );
 
 	if( got == trader_fills_map.end() ){
 		trader_fills_map[t] = fill_qty;
@@ -55,6 +61,9 @@ void Header::op(){
 				oem.init(this);
 				//oem.printOEM();
 				stats.incrementOEM();
+
+				OrderEntry oe(hdr->sequence_id + 1, this->client_assigned_id, this->trader_tag, this->instrument, this->qty, 0);
+				stats.filled_orders_map[] = std::move(oe) ;
 			}
 			break;
 		case 2:
@@ -63,6 +72,23 @@ void Header::op(){
 				oam.init(this);
 				//oam.printOAM();
 				stats.incrementOAM();
+				// look into 
+				unordered_map<string, vector<OrderEntry>>::const_iterator got = stats.filled_orders_map.find( oam.client_assigned_id ) ;
+
+				if( got == stats.filled_orders_map.end() ){
+					 
+				}else{
+
+					vector<OrderEntry>::const_iterator ve = stats.filled_orders_map[oam.client_assigned_id];
+					for(  ){
+						if( entry.sequence_id == oam.sequence_id ){
+							entry.order_id = oam.order_id;
+							break;
+						}
+					}
+				}
+				
+				stats.orders_map[oam.order_id] = std::copy( oa)
 				break;
 			}
 		case 3:
@@ -111,7 +137,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	int remain = (int)(hdr->getMsgLen() ) - fix_size - 8; // minus fix size fields and termination string
 	this->firm = br->getChars(remain);
 
-	OrderEntry oe(hdr->sequence_id + 1, )
+
 	br->consumeTermination();
 }
 
@@ -149,18 +175,6 @@ void OrderFillMessage::init(Header * hdr){
 	this->no_of_contras = br->getUint8();
 	this->trades = br->getTrades( this->no_of_contras );
 	br->consumeTermination();
-}
-
-vector<string> OrderFillMessage::getContraTrader(){
-	vector<string> contra ;
-	for(auto t:trades){
-		contra.push_back(t.trader_tag);
-	}
-	return std::move(contra);
-}
-
-int OrderFillMessage::getFillQty(){
-	return (int)fill_qty;
 }
 
 int parseStream(string stream){	
