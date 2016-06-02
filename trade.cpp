@@ -94,7 +94,7 @@ int parseStream(string stream){
 	Header hdr(stream);
 	while( hdr.next() ){
 		hdr.read();
-		break;
+		//break;
 	}
 	return 1;
 }
