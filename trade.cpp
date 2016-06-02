@@ -1,5 +1,28 @@
 #include "header.h"
 
+void Stats::creditTraders( OrderFillMessage &ofm){
+	vector<string> contra = ofm.getContraTrader();
+	int fill_qty = (int)ofm.getFillQty();
+	for(auto t:contra ){
+		addQty(t, fill_qty);
+	}
+	addQty( getOriginalTrader( ofm.getOrderId() ), fill_qty);
+}
+
+void Stats::getOriginalTrader(uint32_t order_id){
+
+}
+
+void Stats::addQty(string trader, int fill_qty){
+	unordered_map<string, int>::const_iterator got = trader_fills_map.find( t );
+
+	if( got == trader_fills_map.end() ){
+		trader_fills_map[t] = fill_qty;
+	}else{
+		trader_fills_map[t] += fill_qty;
+	}
+}
+
 void Header::read(){
 	//this->marker = this->br->getUint16();
 
@@ -48,6 +71,7 @@ void Header::op(){
 				ofm.init(this);
 				//ofm.printOFM();
 				stats.incrementOFM();
+				stats.creditTraders(ofm);
 				break;
 			}
 		default:
@@ -79,12 +103,15 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	this->time_in_force = br->getUint8();
 
 	// copy 3 chars to trader tag
-	this->trader_tag = br->getChars(3);
+	vector<char> cv = br->getChars(3);
+	this->trader_tag = string(cv.begin(), cv.end());
 	this->firm_id = br->getUint8();
 
 	// read until termination string
 	int remain = (int)(hdr->getMsgLen() ) - fix_size - 8; // minus fix size fields and termination string
 	this->firm = br->getChars(remain);
+
+	OrderEntry oe(hdr->sequence_id + 1, )
 	br->consumeTermination();
 }
 
@@ -124,6 +151,17 @@ void OrderFillMessage::init(Header * hdr){
 	br->consumeTermination();
 }
 
+vector<string> OrderFillMessage::getContraTrader(){
+	vector<string> contra ;
+	for(auto t:trades){
+		contra.push_back(t.trader_tag);
+	}
+	return std::move(contra);
+}
+
+int OrderFillMessage::getFillQty(){
+	return (int)fill_qty;
+}
 
 int parseStream(string stream){	
 	Header hdr(stream);

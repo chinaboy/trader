@@ -12,6 +12,27 @@ using namespace std;
 class OrderEntryMessage;
 class OrderAckMessage;
 class OrderFillMessage;
+class Trade;
+
+class OrderEntry{
+public:
+	OrderEntry(){}
+
+	OrderEntry(uint64_t i_sequence_id, uint64_t i_client_id, string i_trader_tag, string i_instrument, uint32_t i_qty, uint32_t i_order_id ){
+		this->sequence_id = i_sequence_id;
+		this->client_id = i_client_id;
+		this->trader_tag = i_trader_tag;
+		this->instrument = i_instrument;
+		this->qty = i_qty;
+		this->order_id = i_order_id;
+	}
+	uint64_t sequence_id;
+	uint64_t client_id;
+	string trader_tag;
+	string instrument;
+	uint32_t qty;
+	uint32_t order_id;
+};
 
 class Stats{
 public:
@@ -40,8 +61,19 @@ public:
 				<< endl;
 	}
 
+	void creditTraders(OrderFillMessage &ofm);
+
 	int oem_count, oam_count, packet, ofm_count ;
 
+	unordered_map<string, int> trader_fills_map; // trader tag, filled volume
+
+	dequeue<OrderEntry> order_map; // order ack message { OrderEntry } match on sequence id if status is good
+												// once filled, should be cleared
+
+	dequeue<OrderEntry> waiting_orders; 				// order entry message wait for confirmation { sequence id + 1 , client id, trader_tag, instrument, qty, fake order id }
+														// once confirmed, should be cleared from map
+
+	//unordered_map<uint32_t, > filled_order_map;  // { original trader tag, list of contra traders  }
 };
 
 class Trade{
@@ -61,7 +93,7 @@ public:
 	}
 
 	uint8_t firm_id;
-	vector<char> trader_tag; // char [3]
+	string trader_tag; // char [3]
 	uint32_t qty;
 };
 
@@ -182,10 +214,12 @@ public:
 
 		vector<Trade> getTrades(int no_of_contras){
 			vector<Trade> v;
+			vector<char> cv;
 			for(int i=0; i<no_of_contras; ++i){	
 				Trade t;
 				t.firm_id = getUint8();
-				t.trader_tag = getChars(3);
+				cv = getChars(3);
+				t.trader_tag = string(cv.begin(), cv.end());
 				t.qty = getUint32();
 
 				v.push_back(t);
@@ -277,7 +311,7 @@ private:
 	uint8_t side;
 	uint64_t client_assigned_id;
 	uint8_t time_in_force;
-	vector<char> trader_tag ; // char trader_tag[3];
+	string trader_tag ; // char trader_tag[3];
 	uint8_t firm_id;
 	vector<char> firm; // max 255 chars
 	int fix_size;
@@ -316,6 +350,8 @@ public:
 		for(auto t:trades)
 			t.printTrade();
 	}
+
+	uint32_t getOrderId( ) { return order_id ; }
 private:
 	Header *hdr;
 	uint32_t order_id;
