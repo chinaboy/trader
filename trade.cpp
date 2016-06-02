@@ -2,10 +2,12 @@
 
 void Header::read(){
 	//this->marker = this->br->getUint16();
-
+	if( f.eof())
+		return;
 	char s = this->br->getUint8();
 	char t = this->br->getUint8();
-	if( !next())
+
+	if( f.eof())
 		return;
 	assert( s=='S' && t=='T' );
 		
