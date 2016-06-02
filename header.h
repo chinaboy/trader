@@ -35,7 +35,7 @@ public:
 	}
 
 	void print(){
-		
+
 	}
 
 	int oem_count, oam_count, packet, ofm_count ;
@@ -44,6 +44,7 @@ public:
 
 class Trade{
 public:
+	/*
 	Trade(char *tmp_buffer){
 		this->firm_id = tmp_buffer[0];
 		this->trader_tag[2] = tmp_buffer[1];
@@ -51,13 +52,14 @@ public:
 		this->trader_tag[0] = tmp_buffer[3];
 		this->qty = ((uint32_t) tmp_buffer[7] << 24 ) + ((uint32_t) tmp_buffer[6] << 16 ) + ((uint32_t) tmp_buffer[5] << 8 ) + (uint32_t) tmp_buffer[4];
 	}
+	*/
 
 	void printTrade(){
 		cout << "firm_id is " << unsigned(firm_id) << ", trader_tag is " << trader_tag[0] << trader_tag[1] << trader_tag[2] << ", qty is " << qty << endl;
 	}
 
 	uint8_t firm_id;
-	char trader_tag[3]; // char [3]
+	vector<char> trader_tag; // char [3]
 	uint32_t qty;
 };
 
@@ -110,36 +112,21 @@ public:
 
 	// read til termination characters
 	/// {{{
-		vector<char> getMaxChars(int limit){
-			vector<char> v;
-			int readChars = 0;
-			while( readChars < limit ){
-				v.push_back( f.get() );
-				readChars ++;
-				if( v.size() < termination.length() )
-					continue;
-				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 ){
-					for(auto c:termination)
-						v.pop_back();
-					break;
-				}
-			}
-			//reverse(v.begin(), v.end());
+		vector<char> getMaxChars(int size){
+			vector<char> v(size);
+			f.read((char *) &v.data[0], size);			 
 			return std::move(v);
 		}
 
-		vector<Trade> getTrades(){
+		vector<Trade> getTrades(int no_of_contras){
 			vector<Trade> v;
 			char tmp_buffer[8];
-			for(;;){
-				f.read((char*)tmp_buffer, 8);
+			for(int i=0; i<no_of_contras; ++i){		
+				Trade t;
+				t.firm_id = getUint8();
+				t.trader_tag = getChars(3);
+				t.qty = getUint32();
 
-				// Is it end of repeated group of trades?
-				if( termination.compare( 0, string::npos, (char*)tmp_buffer, 8 ) == 0 ){
-					break;
-				}
-				
-				Trade t(tmp_buffer);
 				v.push_back(t);
 			}
 			return std::move(v);
@@ -147,7 +134,9 @@ public:
 	/// }}}
 
 		void consumeTermination(){
-			getChars(8);
+			vector<char> v = getChars(8);
+			if( string(v.begin(), v.end()).compare(termination) != 0 )
+				throw runtime_error("termination string not match");
 		}
 private:
 	ifstream f;
@@ -181,6 +170,8 @@ public:
 	void printStats(){
 		stats.print();
 	}
+
+	uint16_t getMsgLen(){return msg_len;}
 private:
 	Stats stats;
 	ifstream f;

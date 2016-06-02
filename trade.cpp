@@ -1,7 +1,11 @@
 #include "header.h"
 
 void Header::read(){
-	this->marker = this->br->getUint16();
+	//this->marker = this->br->getUint16();
+	char s = this->br->getUint8();
+	char t = this->br->getUint8();
+	if( s!='S' || t!='T' )
+		throw runtime_error("marker not supported");
 	this->msg_type = this->br->getUint8();			
 	this->sequence_id = this->br->getUint64(); 
 	this->timestamp = this->br->getUint64();
@@ -66,7 +70,9 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	this->firm_id = br->getUint8();
 
 	// read until termination string
-	this->firm = br->getMaxChars(255);
+	int remain = (int)(hdr->getMsgLen() ) - fix_size ;
+	this->firm = br->getMaxChars(remain);
+	br->consumeTermination();
 }
 
 void OrderAckMessage::init(Header * hdr){
@@ -89,7 +95,8 @@ void OrderFillMessage::init(Header * hdr){
 	this->fill_price = br->getUint64();
 	this->fill_qty = br->getUint32();
 	this->no_of_contras = br->getUint8();
-	this->trades = br->getTrades();
+	this->trades = br->getTrades( this->no_of_contras );
+	br->consumeTermination();
 }
 
 
