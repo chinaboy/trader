@@ -21,6 +21,11 @@ public:
 		this->trader_tag[0] = tmp_buffer[3];
 		this->qty = ((uint32_t) tmp_buffer[7] << 24 ) + ((uint32_t) tmp_buffer[6] << 16 ) + ((uint32_t) tmp_buffer[5] << 8 ) + (uint32_t) tmp_buffer[4];
 	}
+
+	void printTrade(){
+		cout << "firm_id is " << firm_id << ", trader_tag is " << trader_tag[0] << trader_tag[1] << trader_tag[2] << ", qty is " << qty << endl;
+	}
+	
 	uint8_t firm_id;
 	char trader_tag[3]; // char [3]
 	uint32_t qty;
@@ -185,6 +190,10 @@ public:
 
 	void init(Header * hdr);	
 
+	void printOAM(){
+		cout << "order_id is " << order_id << ", client_id is " << client_id << ", order_status is " << unsigned(order_status) << ", reject_code is " << unsigned(reject_code) << endl;
+	}
+
 private:
 	Header *hdr;
 	uint32_t order_id;
@@ -202,6 +211,12 @@ public:
 	void init(Header* hdr);
 
 	~OrderFillMessage(){}
+
+	void printOFM(){
+		cout << "order_id is "<< order_id << ", fill_price is " << fill_price << ", fill_qty is " << fill_qty << ", no_of_contras is " << unsigned(no_of_contras) << endl;
+		for(auto t:trades)
+			t.printTrade();
+	}
 private:
 	Header *hdr;
 	uint32_t order_id;
