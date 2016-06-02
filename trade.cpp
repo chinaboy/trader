@@ -2,14 +2,19 @@
 
 void Header::read(){
 	//this->marker = this->br->getUint16();
+
 	char s = this->br->getUint8();
 	char t = this->br->getUint8();
-	if( s!='S' || t!='T' )
-		throw runtime_error("marker not supported");
+	if( !next())
+		return;
+	assert( s=='S' && t=='T' );
+		
 	this->msg_type = this->br->getUint8();			
 	this->sequence_id = this->br->getUint64(); 
 	this->timestamp = this->br->getUint64();
 	this->msg_direction = this->br->getUint8();
+
+	assert( this->msg_direction == 0 || this->msg_direction == 1);
 	this->msg_len = this->br->getUint16();
 	stats.incrementPacket();
 	op();
