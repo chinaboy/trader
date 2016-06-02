@@ -16,7 +16,7 @@ int parseStream(string stream){
 	char c;
 	while( f.get(c) ){
 		 
-		cout << hex << c << ' ' ;
+		cout << hex << (uint8_t)c << ' ' ;
 
 	} 
 
