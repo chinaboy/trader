@@ -17,7 +17,7 @@ void Header::op(){
 			{
 				OrderEntryMessage oem;
 				oem.init(this);
-				printOEM();
+				oem.printOEM();
 			}
 			break;
 		case 2:
