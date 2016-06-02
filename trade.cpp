@@ -40,7 +40,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 	//this.hdr = std::move(hdr);
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
-	br->setBufferSize(fix_size);
+	 
 	
 	this->price = br->getUint64();
 	this->qty = br->getUint32();
@@ -62,12 +62,13 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 void OrderAckMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
-	br->setBufferSize(fix_size);
 	
 	this->order_id = br->getUint32();
 	this->client_id = br->getUint64();
 	this->order_status = br->getUint8();
 	this->reject_code = br->getUint8();
+	// consume termination characters
+	br->consumeTermination();
 }
 
 void OrderFillMessage::init(Header * hdr){

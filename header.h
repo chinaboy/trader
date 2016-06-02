@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector> 
 #include <stdexcept> 
+#include <algorithm> 
 
 using namespace std;
 
@@ -82,7 +83,7 @@ public:
 				readChars ++;
 				if( v.size() < termination.length() )
 					continue;
-				if( termination.compare(0, string:npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 )
+				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 )
 					break;
 			}
 			return std::move(v);
@@ -95,7 +96,7 @@ public:
 				f.read((char*)tmp_buffer, 8);
 
 				// Is it end of repeated group of trades?
-				if( termination.compare( 0, string:npos, (char*)tmp_buffer, 8 ) == 0 ){
+				if( termination.compare( 0, string::npos, (char*)tmp_buffer, 8 ) == 0 ){
 					break;
 				}
 				
@@ -106,7 +107,9 @@ public:
 		}
 	/// }}}
 
-
+		void consumeTermination(){
+			getChars(8);
+		}
 private:
 	ifstream f;
 	string termination;
@@ -156,13 +159,13 @@ private:
 	
 	uint64_t price;
 	uint32_t qty;
-	string instrument ; // char instrument[10];
+	vector<char> instrument ; // char instrument[10];
 	uint8_t side;
 	uint64_t client_assigned_id;
 	uint8_t time_in_force;
-	string trader_tag ; // char trader_tag[3];
+	vector<char> trader_tag ; // char trader_tag[3];
 	uint8_t firm_id;
-	string firm; // max 255 chars
+	vector<char> firm; // max 255 chars
 	int fix_size;
 };
 
