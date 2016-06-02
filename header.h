@@ -85,7 +85,7 @@ public:
 					continue;
 				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 ){
 					for(auto c:termination)
-						v.pop();
+						v.pop_back();
 					break;
 				}
 			}
