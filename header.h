@@ -135,7 +135,9 @@ public:
 
 	BytesReader * getBytesReader(){return br;}
 
-	void printHeader(){ }
+	void printHeader(){ 
+		cout<< "message type is " << msg_type << ", sequence_id is " << sequence_id << ", timestamp is " << timestamp << ", direction is " << msg_direction << ", msg_len is " << msg_len << endl;
+	}
 private:
 	ifstream f;
 	int header_size;
@@ -154,6 +156,10 @@ public:
 
 	void init(Header* hdr);
 
+	void printOEM(){
+		cout << "price is " << price << ", qty is " << qty << ", instrument is " << string(instrument.begin(), instrument.end()) << ", side is " << side << ", client_assigned_id is " << client_assigned_id
+			<< ", time_in_force is " << time_in_force << ", trader_tag is " << string(trader_tag.begin(), trader_tag.end() ) << ", firm_id is " << firm_id << ", firm is " << string(firm.begin(), firm.end()) << endl;
+	}
 private:
 	Header *hdr;
 	
