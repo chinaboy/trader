@@ -83,7 +83,7 @@ public:
 		buffer = new char[n+1];
 		pos = 0;
 
-		f.read( buffer, fix_size );
+		f.read( buffer, n );
 	}
 
 	void reset(){
