@@ -11,11 +11,13 @@ void Header::read(){
 }
 
 void Header::op(){
+	printHeader();
 	switch(this->msg_type){
 		case 1:
 			{
 				OrderEntryMessage oem;
 				oem.init(this);
+				printOEM();
 			}
 			break;
 		case 2:
