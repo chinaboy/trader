@@ -12,6 +12,36 @@ class OrderEntryMessage;
 class OrderAckMessage;
 class OrderFillMessage;
 
+class Stats{
+public:
+	Stats(){
+		oem_count = oam_count = ofm_count = packet = 0;
+	}
+
+	void incrementOEM(){
+		oem_count ++;
+	}
+
+	void incrementOAM(){
+		oam_count ++;
+	}
+
+	void incrementOFM(){
+		ofm_count ++;
+	}
+
+	void incrementPacket(){
+		packet ++;
+	}
+
+	void print(){
+		
+	}
+
+	int oem_count, oam_count, packet, ofm_count ;
+
+};
+
 class Trade{
 public:
 	Trade(char *tmp_buffer){
@@ -147,7 +177,12 @@ public:
 	void printHeader(){ 
 		cout<< "message type is " << unsigned(msg_type) << ", sequence_id is " << sequence_id << ", timestamp is " << timestamp << ", direction is " << unsigned(msg_direction) << ", msg_len is " << msg_len << endl;
 	}
+
+	void printStats(){
+		stats.print();
+	}
 private:
+	Stats stats;
 	ifstream f;
 	int header_size;
 	BytesReader *br;

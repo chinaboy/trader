@@ -7,31 +7,35 @@ void Header::read(){
 	this->timestamp = this->br->getUint64();
 	this->msg_direction = this->br->getUint8();
 	this->msg_len = this->br->getUint16();
+	stats.incrementPacket();
 	op();
 }
 
 void Header::op(){
-	printHeader();
+	//printHeader();
 	switch(this->msg_type){
 		case 1:
 			{
 				OrderEntryMessage oem;
 				oem.init(this);
-				oem.printOEM();
+				//oem.printOEM();
+				stats.incrementOEM();
 			}
 			break;
 		case 2:
 			{
 				OrderAckMessage oam;
 				oam.init(this);
-				oam.printOAM();
+				//oam.printOAM();
+				stats.incrementOAM();
 				break;
 			}
 		case 3:
 			{
 				OrderFillMessage ofm;
 				ofm.init(this);
-				ofm.printOFM();
+				//ofm.printOFM();
+				stats.incrementOFM();
 				break;
 			}
 		default:
