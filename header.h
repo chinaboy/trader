@@ -97,9 +97,8 @@ public:
 	}
 
 	uint64_t getUint64(){
-		uint64_t low = (uint64_t)getUint32();
-		uint64_t high = (uint64_t)getUint32();
-		return (high << 32 | low);
+		uint64_t result = ((uint64_t) s[7] << 56 ) + ((uint64_t) s[6] << 48 ) + ((uint64_t) s[5] << 40 ) + ((uint64_t) s[4] << 32 ) + ((uint64_t) s[3] << 24 ) + ((uint64_t) s[2] << 16 ) + ((uint64_t) s[1] << 8 ) + (uint64_t) s[0];
+		return result;
 	}
 
 	vector<char> getChars(int n){
@@ -113,13 +112,14 @@ public:
 
 	// read til termination characters
 	/// {{{
+	/*
 		vector<char> getMaxChars(int size){
 			vector<char> v;
 			v.reserve(size);
 			for(int i=0; i<size; i++)
 				v[i] = f.get();			 
 			return std::move(v);
-		}
+		}*/
 
 		vector<Trade> getTrades(int no_of_contras){
 			vector<Trade> v;
