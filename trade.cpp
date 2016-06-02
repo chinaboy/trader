@@ -84,7 +84,7 @@ void OrderEntryMessage::init(Header * hdr){   // exclude variable firm string an
 void OrderAckMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
-	br->setBufferSize( fix_size );
+	br->setBufferSize( hdr->getMsgLen() );
 	
 	this->order_id = br->getUint32();
 	this->client_id = br->getUint64();
@@ -97,7 +97,7 @@ void OrderAckMessage::init(Header * hdr){
 void OrderFillMessage::init(Header * hdr){
 	this->hdr = hdr;
 	BytesReader *br = hdr->getBytesReader();
-	br->setBufferSize( fix_size );
+	br->setBufferSize( hdr->getMsgLen() );
 
 	this->order_id = br->getUint32();
 	this->fill_price = br->getUint64();
