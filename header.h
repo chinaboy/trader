@@ -30,7 +30,7 @@ class BytesReader{
 public:
 	BytesReader(string stream){
 		this->f.open(stream.c_str(), ifstream::binary);
-		termination.assign("BDBDBDBD"); // in reverse
+		termination.assign("DBDBDBDB"); 
 		 
 	}
 
@@ -47,7 +47,7 @@ public:
 		uint16_t result;
 		char s[2];
 		f.get( (char*) s, 3 );
-		result = ((uint16_t) s[0] << 8 ) + (uint16_t) s[1];
+		result = ((uint16_t) s[1] << 8 ) + (uint16_t) s[0];
 		return result;
 	}
 
@@ -55,7 +55,7 @@ public:
 		uint32_t result;
 		char s[4];
 		f.get( (char*) s, 5 );
-		result = ((uint32_t) s[0] << 24 ) + ((uint32_t) s[1] << 16 ) + ((uint32_t) s[2] << 8 ) + (uint32_t) s[3];
+		result = ((uint32_t) s[3] << 24 ) + ((uint32_t) s[2] << 16 ) + ((uint32_t) s[1] << 8 ) + (uint32_t) s[0];
 		return result;
 	}
 
@@ -86,6 +86,7 @@ public:
 				if( termination.compare(0, string::npos, (char*)(v.data() + v.size() - termination.length()), termination.length() ) == 0 )
 					break;
 			}
+			reverse(v.begin(), v.end());
 			return std::move(v);
 		}
 
